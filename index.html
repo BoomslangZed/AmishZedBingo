@@ -48,7 +48,7 @@ const phrases = [
   'ISH TALKS ABOUT SKATEBOARDING',
   'ISH TALKS ABOUT COMCAST',
   'MY SUMMER CAR GETS MENTIONED',
-  'ISH EATS A COSMIS CRISP APPLE',
+  'ISH EATS A COSMIC CRISP APPLE', // corrected
   '"OI VEY"',
   'ISH GETS SCARED BY SCARE DONO',
   'SOMEONE MAKES ROBOT LADY GARGLE',
@@ -69,7 +69,7 @@ const phrases = [
 function generateRandomCard() {
   const shuffled = [...phrases].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "★"); // FREE space with a star
+  selected.splice(12, 0, "★"); // middle cell with star
   return selected;
 }
 
@@ -84,10 +84,12 @@ function generateCardWithName() {
 
   // Top title
   doc.setFontSize(22);
+  doc.setFont("helvetica", "bold");
   doc.text("AmishZed Bingo", pageWidth / 2, 20, { align: "center" });
 
   // Player name below title
   doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
   doc.text(playerName, pageWidth / 2, 30, { align: "center" });
 
   const startX = 20;
@@ -95,25 +97,26 @@ function generateCardWithName() {
   const cellSize = 35;
   doc.setFontSize(9);
 
-  // Set thicker lines
-  doc.setLineWidth(0.8); // thicker than default (default is 0.2)
+  // Thicker grid lines
+  doc.setLineWidth(0.8);
 
-  // Draw 5x5 grid
+  // Draw 5x5 grid with correct center star
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
       const x = startX + col * cellSize;
       const y = startY + row * cellSize;
-      const text = card[row * 5 + col];
+      let text = card[row * 5 + col];
 
-      doc.rect(x, y, cellSize, cellSize); // draw cell with thick lines
-
+      // center alignment for FREE star
       const splitText = doc.splitTextToSize(text, cellSize - 4);
-      const textY = y + (cellSize / 2) - (splitText.length * 2);
+      const textY = y + (cellSize / 2) - ((splitText.length - 1) * 2);
+
+      doc.rect(x, y, cellSize, cellSize);
       doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
     }
   }
 
-  // Add current date at bottom
+  // Date at bottom
   const today = new Date();
   const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
   doc.setFontSize(12);
