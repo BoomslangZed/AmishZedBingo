@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ISH Bingo PDF Generator</title>
-  <!-- jsPDF library for PDF generation -->
+  <title>AmishZed Bingo PDF Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
@@ -10,12 +9,9 @@
       text-align: center;
       margin-top: 50px;
     }
-
     h1 {
       margin-bottom: 30px;
     }
-
-    /* Green button styling */
     button {
       padding: 15px 30px;
       font-size: 18px;
@@ -25,7 +21,6 @@
       border: none;
       border-radius: 5px;
     }
-
     button:hover {
       background-color: #45a049;
     }
@@ -33,14 +28,13 @@
 </head>
 <body>
 
-<h1>🎉 ISH Bingo PDF Generator</h1>
+<h1>🎉 AmishZed Bingo PDF Generator</h1>
 
 <button onclick="generateCardWithName()">CLICK TO GENERATE</button>
 
 <script>
 const { jsPDF } = window.jspdf;
 
-// Your Bingo phrases
 const phrases = [
   'MORNING F',
   'ISH TALKS ABOUT RUN CLUB',
@@ -72,15 +66,13 @@ const phrases = [
   'ORANGE TULUNE'
 ];
 
-// Randomize Bingo card and insert FREE space
 function generateRandomCard() {
   const shuffled = [...phrases].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "FREE"); // middle cell
+  selected.splice(12, 0, "★"); // FREE space with a star
   return selected;
 }
 
-// Main function to generate PDF
 function generateCardWithName() {
   let playerName = prompt("Enter your name for the Bingo card:");
   if (!playerName) playerName = "Anonymous";
@@ -90,9 +82,9 @@ function generateCardWithName() {
 
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Title
+  // Top title
   doc.setFontSize(22);
-  doc.text("ISH BINGO", pageWidth / 2, 20, { align: "center" });
+  doc.text("AmishZed Bingo", pageWidth / 2, 20, { align: "center" });
 
   // Player name below title
   doc.setFontSize(14);
@@ -118,14 +110,15 @@ function generateCardWithName() {
     }
   }
 
-  // Add date at bottom
+  // Add current date at bottom
   const today = new Date();
-  const dateStr = today.toLocaleDateString();
+  const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
   doc.setFontSize(12);
-  doc.text(`Date: ${dateStr}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
+  doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
 
-  // Save PDF
-  doc.save(`ish_bingo_${playerName}.pdf`);
+  // Save PDF with "AmishZed Bingo [YYYY-MM-DD].pdf"
+  const filename = `AmishZed Bingo ${dateStr}.pdf`;
+  doc.save(filename);
 }
 </script>
 
