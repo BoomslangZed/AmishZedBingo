@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>ISH Bingo PDF Generator</title>
-  <!-- jsPDF library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
@@ -15,7 +14,6 @@
       margin-bottom: 30px;
     }
 
-    /* Green button styling */
     button {
       padding: 15px 30px;
       font-size: 18px;
@@ -35,8 +33,7 @@
 
 <h1>🎉 ISH Bingo PDF Generator</h1>
 
-<!-- Updated button text -->
-<button onclick="generateAndDownloadPDF()">CLICK TO GENERATE</button>
+<button onclick="generateCardWithName()">CLICK TO GENERATE</button>
 
 <script>
 const { jsPDF } = window.jspdf;
@@ -76,33 +73,42 @@ const phrases = [
 function generateRandomCard() {
   const shuffled = [...phrases].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "FREE"); // FREE in the center
+  selected.splice(12, 0, "FREE");
   return selected;
 }
 
-// Generate PDF and download
-function generateAndDownloadPDF() {
+// Prompt for name and generate PDF
+function generateCardWithName() {
+  let playerName = prompt("Enter your name for the Bingo card:");
+  if (!playerName) playerName = "Anonymous";
+
   const card = generateRandomCard();
   const doc = new jsPDF();
 
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
   // Title
   doc.setFontSize(22);
   doc.text("ISH BINGO", pageWidth / 2, 20, { align: "center" });
+
+  // Player name below title
+  doc.setFontSize(14);
+  doc.text(playerName, pageWidth / 2, 30, { align: "center" });
 
   const startX = 20;
   const startY = 40;
   const cellSize = 35;
   doc.setFontSize(9);
 
+  // Draw 5x5 grid
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
       const x = startX + col * cellSize;
       const y = startY + row * cellSize;
       const text = card[row * 5 + col];
 
-      doc.rect(x, y, cellSize, cellSize); // Draw cell
+      doc.rect(x, y, cellSize, cellSize);
 
       const splitText = doc.splitTextToSize(text, cellSize - 4);
       const textY = y + (cellSize / 2) - (splitText.length * 2);
@@ -110,7 +116,13 @@ function generateAndDownloadPDF() {
     }
   }
 
-  doc.save("ish_bingo_card.pdf");
+  // Add current date at the bottom
+  const today = new Date();
+  const dateStr = today.toLocaleDateString();
+  doc.setFontSize(12);
+  doc.text(`Date: ${dateStr}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
+
+  doc.save(`ish_bingo_${playerName}.pdf`);
 }
 </script>
 
