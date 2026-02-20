@@ -1,130 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>ISH Bingo PDF Generator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
+# 🎉 ISH Bingo PDF Generator
 
-    h1 {
-      margin-bottom: 30px;
-    }
+This repository hosts a live web-based Bingo card generator.
 
-    button {
-      padding: 15px 30px;
-      font-size: 18px;
-      cursor: pointer;
-      background-color: #4CAF50; /* Green */
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
+## 👉 How to Generate a Bingo Card
 
-    button:hover {
-      background-color: #45a049; /* Darker green on hover */
-    }
-  </style>
-</head>
-<body>
+1. Visit the live website:
 
-<h1>🎉 ISH Bingo PDF Generator</h1>
+[Click here to open the Bingo Generator](https://yourusername.github.io/bingo-site/)
 
-<button onclick="generateCardWithName()">CLICK TO GENERATE</button>
+2. On the website, click the **"CLICK TO GENERATE"** button.
+3. Enter your name in the prompt.
+4. Your personalized Bingo PDF will automatically download.
+5. The PDF includes:
+   - Randomized Bingo card
+   - FREE space in the center
+   - Your name at the top
+   - Current date at the bottom
 
-<script>
-const { jsPDF } = window.jspdf;
+---
 
-const phrases = [
-  'MORNING F',
-  'ISH TALKS ABOUT RUN CLUB',
-  'ISH STRIPS',
-  'ISH MISSES A SHOT AGAINST A PLAYER',
-  'ISH MISSES A SHOT AGAINST AN ANIMAL',
-  'BABYZED PHOTO',
-  'ISH PROMOTES NEW YT VIDEO',
-  '"BURY"',
-  'ISH GOES RED HUNGRY',
-  'ISH TALKS ABOUT SKATEBOARDING',
-  'ISH TALKS ABOUT COMCAST',
-  'MY SUMMER CAR GETS MENTIONED',
-  'ISH EATS A COSMIS CRISP APPLE',
-  '"OI VEY"',
-  'ISH GETS SCARED BY SCARE DONO',
-  'SOMEONE MAKES ROBOT LADY GARGLE',
-  'ISH MENTIONS GAME OF THRONES',
-  '"I SAW A POST ON REDDIT"',
-  'ISH SINGS BEAR NECESSETIES',
-  'ISH MENTIONS PRAGUE',
-  'ISH SAYS "PICKLE"',
-  'ISH MENTIONS BILL',
-  'ISH DIES',
-  'DAYZ BUGS',
-  'FERRO SHOT',
-  '"I FOUND A _____ THERE"',
-  'ISH BREAKS A LEG',
-  'ORANGE TULUNE'
-];
+## 📄 Notes
 
-// Generate random Bingo card with FREE space
-function generateRandomCard() {
-  const shuffled = [...phrases].sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "FREE");
-  return selected;
-}
-
-// Prompt for name and generate PDF
-function generateCardWithName() {
-  let playerName = prompt("Enter your name for the Bingo card:");
-  if (!playerName) playerName = "Anonymous";
-
-  const card = generateRandomCard();
-  const doc = new jsPDF();
-
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-
-  // Title
-  doc.setFontSize(22);
-  doc.text("ISH BINGO", pageWidth / 2, 20, { align: "center" });
-
-  // Player name below title
-  doc.setFontSize(14);
-  doc.text(playerName, pageWidth / 2, 30, { align: "center" });
-
-  const startX = 20;
-  const startY = 40;
-  const cellSize = 35;
-  doc.setFontSize(9);
-
-  // Draw 5x5 grid
-  for (let row = 0; row < 5; row++) {
-    for (let col = 0; col < 5; col++) {
-      const x = startX + col * cellSize;
-      const y = startY + row * cellSize;
-      const text = card[row * 5 + col];
-
-      doc.rect(x, y, cellSize, cellSize);
-
-      const splitText = doc.splitTextToSize(text, cellSize - 4);
-      const textY = y + (cellSize / 2) - (splitText.length * 2);
-      doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
-    }
-  }
-
-  // Add current date at the bottom
-  const today = new Date();
-  const dateStr = today.toLocaleDateString();
-  doc.setFontSize(12);
-  doc.text(`Date: ${dateStr}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
-
-  doc.save(`ish_bingo_${playerName}.pdf`);
-}
-</script>
-
-</body>
-</html>
+- Make sure your browser allows downloads.
+- The site works on Chrome, Firefox, Edge, and Safari.
+- The generator is fully client-side; no data is stored.
