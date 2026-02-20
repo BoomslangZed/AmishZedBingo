@@ -74,7 +74,7 @@ const phrases = [
 function generateRandomCard() {
   const shuffled = [...phrases].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "FREE"); // center cell placeholder
+  selected.splice(12, 0, "FREE SPACE"); // middle cell
   return selected;
 }
 
@@ -100,17 +100,7 @@ function generateCardWithName() {
   const startY = 50;
   const cellSize = 35;
   doc.setFontSize(10);
-  doc.setLineWidth(0.8);
-
-  // Column headers: A-M-I-S-H
-  const headers = ["A", "M", "I", "S", "H"];
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  headers.forEach((letter, index) => {
-    doc.text(letter, startX + index * cellSize + cellSize/2, startY - 5, { align: "center" });
-  });
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setLineWidth(0.2); // normal uniform line width
 
   // Draw 5x5 grid
   for (let row = 0; row < 5; row++) {
@@ -121,16 +111,16 @@ function generateCardWithName() {
 
       doc.rect(x, y, cellSize, cellSize);
 
-      // Center cell is FREE with a Unicode star
       if (row === 2 && col === 2) {
-        doc.setFontSize(8);
-        doc.text("FREE SPACE", x + cellSize/2, y + cellSize/2 - 3, { align: "center" });
-        doc.setFontSize(14);
-        doc.text("★", x + cellSize/2, y + cellSize/2 + 8, { align: "center" }); // Unicode star
-        doc.setFontSize(10); // reset for other cells
+        // Middle cell: FREE SPACE in larger bold font
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(text, x + cellSize / 2, y + cellSize / 2 + 2, { align: "center" });
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
       } else {
         const splitText = doc.splitTextToSize(text, cellSize - 4);
-        const textY = y + cellSize/2 - ((splitText.length -1) * 2);
+        const textY = y + cellSize / 2 - ((splitText.length -1) * 2);
         doc.text(splitText, x + cellSize/2, textY + 4, { align: "center" });
       }
     }
@@ -139,7 +129,7 @@ function generateCardWithName() {
   // Date at bottom
   const today = new Date();
   doc.setFontSize(12);
-  doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth/2, startY + 5*cellSize + 15, { align: "center" });
+  doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
 
   // Save PDF
   const filename = `AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
