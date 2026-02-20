@@ -78,7 +78,7 @@ function generateRandomCard() {
   return selected;
 }
 
-// Draw a simple star shape in the center of a cell
+// Draw a simple star shape
 function drawStar(doc, centerX, centerY, radius, points = 5) {
   const step = Math.PI / points;
   const path = [];
@@ -88,9 +88,8 @@ function drawStar(doc, centerX, centerY, radius, points = 5) {
     const y = centerY - r * Math.cos(i * step);
     path.push([x, y]);
   }
-  // Draw lines
   doc.setLineWidth(0.5);
-  doc.lines(path.map((pt, i) => [pt[0]-centerX, pt[1]-centerY]), centerX, centerY);
+  doc.lines(path.map(pt => [pt[0]-centerX, pt[1]-centerY]), centerX, centerY);
 }
 
 function generateCardWithName() {
@@ -99,7 +98,6 @@ function generateCardWithName() {
 
   const card = generateRandomCard();
   const doc = new jsPDF();
-
   const pageWidth = doc.internal.pageSize.getWidth();
 
   // Top title
@@ -113,10 +111,20 @@ function generateCardWithName() {
   doc.text(playerName, pageWidth / 2, 30, { align: "center" });
 
   const startX = 20;
-  const startY = 40;
+  const startY = 50;
   const cellSize = 35;
   doc.setFontSize(10);
   doc.setLineWidth(0.8);
+
+  // Column headers: A-M-I-S-H
+  const headers = ["A", "M", "I", "S", "H"];
+  doc.setFont("times", "bold");
+  doc.setFontSize(12);
+  headers.forEach((letter, index) => {
+    doc.text(letter, startX + index * cellSize + cellSize/2, startY - 5, { align: "center" });
+  });
+  doc.setFont("times", "normal");
+  doc.setFontSize(10);
 
   // Draw 5x5 grid
   for (let row = 0; row < 5; row++) {
@@ -127,15 +135,15 @@ function generateCardWithName() {
 
       doc.rect(x, y, cellSize, cellSize);
 
-      // Center cell is FREE with a star
+      // Center cell is FREE with star
       if (row === 2 && col === 2) {
         doc.setFontSize(8);
-        doc.text("FREE SPACE", x + cellSize / 2, y + cellSize / 2 - 3, { align: "center" });
-        drawStar(doc, x + cellSize / 2, y + cellSize / 2 + 6, 5); // star under text
+        doc.text("FREE SPACE", x + cellSize/2, y + cellSize/2 - 3, { align: "center" });
+        drawStar(doc, x + cellSize/2, y + cellSize/2 + 6, 5); // star under text
       } else {
         const splitText = doc.splitTextToSize(text, cellSize - 4);
-        const textY = y + (cellSize / 2) - ((splitText.length - 1) * 2);
-        doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
+        const textY = y + cellSize/2 - ((splitText.length -1) * 2);
+        doc.text(splitText, x + cellSize/2, textY + 4, { align: "center" });
       }
     }
   }
@@ -143,7 +151,7 @@ function generateCardWithName() {
   // Date at bottom
   const today = new Date();
   doc.setFontSize(12);
-  doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
+  doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth/2, startY + 5*cellSize + 15, { align: "center" });
 
   // Save PDF
   const filename = `AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
