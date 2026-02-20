@@ -19,8 +19,14 @@ This repository hosts a live web-based Bingo card generator.
 
 ---
 
+## 🔹 Preview
+
+![Bingo Generator Screenshot](screenshot.png)
+
+---
+
 ## 📄 Notes
 
 - Make sure your browser allows downloads.
-- The site works on Chrome, Firefox, Edge, and Safari.
-- The generator is fully client-side; no data is stored.
+- Works on Chrome, Firefox, Edge, and Safari.
+- Fully client-side; no data is stored.
