@@ -11,7 +11,7 @@ Users can:
 
 Once GitHub Pages is enabled, the site will be available at:
 
-https://yourusername.github.io/bingo-site/
+https://boomslangzed.github.io/amishzedbingo/
 
 ## 🛠 How It Works
 
