@@ -1,4 +1,4 @@
-# 🎉 ISH Bingo PDF Generator
+# 🎉 ISH Bingo PDF Generator🎉
 
 This repository hosts a live web-based Bingo card generator.
 
