@@ -6,7 +6,7 @@ This repository hosts a live web-based Bingo card generator.
 
 1. Visit the live website:
 
-[Click here to open the Bingo Generator](https://boomslangzed.github.io/amishzedbingo/)
+[Click here to open the Bingo Generator](https://boomslangzed.github.io/project1/)
 
 2. On the website, click the **"CLICK TO GENERATE"** button.
 3. Enter your name in the prompt.
