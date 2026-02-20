@@ -95,6 +95,9 @@ function generateCardWithName() {
   const cellSize = 35;
   doc.setFontSize(9);
 
+  // Set thicker lines
+  doc.setLineWidth(0.8); // thicker than default (default is 0.2)
+
   // Draw 5x5 grid
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
@@ -102,7 +105,7 @@ function generateCardWithName() {
       const y = startY + row * cellSize;
       const text = card[row * 5 + col];
 
-      doc.rect(x, y, cellSize, cellSize); // draw cell
+      doc.rect(x, y, cellSize, cellSize); // draw cell with thick lines
 
       const splitText = doc.splitTextToSize(text, cellSize - 4);
       const textY = y + (cellSize / 2) - (splitText.length * 2);
@@ -112,11 +115,11 @@ function generateCardWithName() {
 
   // Add current date at bottom
   const today = new Date();
-  const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
   doc.setFontSize(12);
   doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
 
-  // Save PDF with "AmishZed Bingo [YYYY-MM-DD].pdf"
+  // Save PDF
   const filename = `AmishZed Bingo ${dateStr}.pdf`;
   doc.save(filename);
 }
