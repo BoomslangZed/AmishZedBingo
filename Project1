@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Custom Bingo Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -37,59 +38,59 @@
       font-size: 16px;
       cursor: pointer;
     }
-
-    @media print {
-      button {
-        display: none;
-      }
-    }
   </style>
 </head>
 <body>
 
-<h1>Custom Bingo Card</h1>
+<h1>ISH BINGO</h1>
 
 <button onclick="generateCard()">Generate New Card</button>
-<button onclick="window.print()">Print</button>
+<button onclick="downloadPDF()">Download PDF</button>
 
 <div id="bingo"></div>
 
 <script>
+const { jsPDF } = window.jspdf;
+
 const phrases = [
-  "MORNING F",
-  "ISH TALKS ABOUT RUN CLUB",
-  "ISH STRIPS",
-  "ISH MISSES A SHOT AGAINST A PLAYER",
-  "ISH MISSES A SHOT AGAINST AN ANIMAL",
-  "BABYZED PHOTO",
-  "ISH PROMOTES NEW YT VIDEO",
-  ""BURY"",
-  "ISH GOES RED HUNGRY",
-  "ISH TALKS ABOUT SKATEBOARDING",
-  "ISH TALKS ABOUT COMCAST",
-  "MY SUMMER CAR GETS MENTIONED",
-  "ISH EATS A COSMIS CRISP APPLE",
-  ""OI VEY"",
-  "ISH GETS SCARED BY SCARE DONO",
-  "SOMEONE MAKES ROBOT LADY GARGLE",
-  "ISH MENTIONS GAME OF THRONES",
-  ""I SAW A POST ON REDDIT"",
-  "ISH SINGS BEAR NECESSETIES",
-  "ISH MENTIONS PRAGUE",
-  "ISH SAYS "PICKLE"",
-  "ISH MENTIONS BILL",
-  "ISH DIES",
-  "DAYZ BUGS",
-  "FERRO SHOT",
-  ""I FOUND A _____ THERE",
-  "ISH BREAKS A LEG",
-  "ORANGE TULUNE"
+  'MORNING F',
+  'ISH TALKS ABOUT RUN CLUB',
+  'ISH STRIPS',
+  'ISH MISSES A SHOT AGAINST A PLAYER',
+  'ISH MISSES A SHOT AGAINST AN ANIMAL',
+  'BABYZED PHOTO',
+  'ISH PROMOTES NEW YT VIDEO',
+  '"BURY"',
+  'ISH GOES RED HUNGRY',
+  'ISH TALKS ABOUT SKATEBOARDING',
+  'ISH TALKS ABOUT COMCAST',
+  'MY SUMMER CAR GETS MENTIONED',
+  'ISH EATS A COSMIS CRISP APPLE',
+  '"OI VEY"',
+  'ISH GETS SCARED BY SCARE DONO',
+  'SOMEONE MAKES ROBOT LADY GARGLE',
+  'ISH MENTIONS GAME OF THRONES',
+  '"I SAW A POST ON REDDIT"',
+  'ISH SINGS BEAR NECESSETIES',
+  'ISH MENTIONS PRAGUE',
+  'ISH SAYS "PICKLE"',
+  'ISH MENTIONS BILL',
+  'ISH DIES',
+  'DAYZ BUGS',
+  'FERRO SHOT',
+  '"I FOUND A _____ THERE"',
+  'ISH BREAKS A LEG',
+  'ORANGE TULUNE'
 ];
 
+let currentCard = [];
+
 function generateCard() {
-  const shuffled = phrases.sort(() => 0.5 - Math.random());
+  const shuffled = [...phrases].sort(() => 0.5 - Math.random());
   const selected = shuffled.slice(0, 24);
   selected.splice(12, 0, "FREE");
+
+  currentCard = selected;
 
   const board = document.getElementById("bingo");
   board.innerHTML = "";
@@ -100,6 +101,42 @@ function generateCard() {
     cell.innerText = text;
     board.appendChild(cell);
   });
+}
+
+function downloadPDF() {
+  if (currentCard.length === 0) {
+    generateCard();
+  }
+
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  doc.setFontSize(22);
+  doc.text("ISH BINGO", pageWidth / 2, 20, { align: "center" });
+
+  const startX = 20;
+  const startY = 40;
+  const cellSize = 30;
+
+  doc.setFontSize(8);
+
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 5; col++) {
+      const x = startX + col * cellSize;
+      const y = startY + row * cellSize;
+      const text = currentCard[row * 5 + col];
+
+      doc.rect(x, y, cellSize, cellSize);
+
+      const splitText = doc.splitTextToSize(text, cellSize - 4);
+      doc.text(splitText, x + cellSize / 2, y + 8, {
+        align: "center",
+        maxWidth: cellSize - 4
+      });
+    }
+  }
+
+  doc.save("ish_bingo_card.pdf");
 }
 
 generateCard();
