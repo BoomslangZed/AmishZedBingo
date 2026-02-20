@@ -20,43 +20,22 @@
       color: white;
       border: none;
       border-radius: 5px;
+      margin-bottom: 20px;
     }
     button:hover {
       background-color: #45a049;
     }
-
-    /* Modal Styles */
-    #rulesModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    #rulesContent {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
+    #rules {
       max-width: 400px;
-      text-align: center;
-    }
-    #rulesContent ol {
+      margin: 0 auto;
       text-align: left;
+      background: #f9f9f9;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
     }
-    #closeRules {
-      margin-top: 15px;
-      padding: 10px 20px;
-      cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    #closeRules:hover {
-      background-color: #45a049;
+    #rules h2 {
+      text-align: center;
     }
   </style>
 </head>
@@ -66,100 +45,36 @@
 
 <button onclick="generateCardWithName()">CLICK TO GENERATE</button>
 
-<!-- Rules Modal -->
-<div id="rulesModal">
-  <div id="rulesContent">
-    <h2>🎯 How to Play ISH Bingo</h2>
-    <ol>
-      <li>Click the <strong>"CLICK TO GENERATE"</strong> button.</li>
-      <li>Enter your <strong>username</strong> when prompted.</li>
-      <li>Play along with your Bingo card!</li>
-      <li>When you get a <strong>Bingo</strong>, share it in the chat!</li>
-    </ol>
-    <button id="closeRules">Got it!</button>
-  </div>
+<!-- Rules Section -->
+<div id="rules">
+  <h2>🎯 How to Play ISH Bingo</h2>
+  <ol>
+    <li>Click the <strong>"CLICK TO GENERATE"</strong> button above.</li>
+    <li>Enter your <strong>username</strong> when prompted.</li>
+    <li>Play along with your Bingo card!</li>
+    <li>When you get a <strong>Bingo</strong>, share it in the chat!</li>
+  </ol>
 </div>
 
 <script>
 const { jsPDF } = window.jspdf;
 
-// Show the rules modal when the page loads
-window.addEventListener('load', () => {
-  const modal = document.getElementById('rulesModal');
-  const closeBtn = document.getElementById('closeRules');
-
-  modal.style.display = 'flex';
-
-  closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-});
-
 const phrases = [
-  'MORNING F',
-  'ISH TALKS ABOUT RUN CLUB',
-  'ISH STRIPS',
-  'ISH MISSES A SHOT AGAINST A PLAYER',
-  'ISH MISSES A SHOT AGAINST AN ANIMAL',
-  'BABYZED PHOTO',
-  'ISH PROMOTES NEW YT VIDEO',
-  '"BURY"',
-  'ISH GOES RED HUNGRY',
-  'ISH GASLIGHTS HIMSELF ABOUT BINGO',
-  'ISH MENTIONS BOTTLE OPENING FEES',
-  'ISH TALKS ABOUT SKATEBOARDING',
-  'ISH DRINKS AT A WELL',
-  'ISH TALKS ABOUT COMCAST',
-  'DAD JOKE IS TOLD',
-  'ISH GETS A KILL',
-  'HYPE TRAIN',
-  'ISH PUTS UP TIME OUT SYMBOL WHILE AFK',
-  'ISH PICKS UP AN SKS',
-  'ISH DOES A DESK POP',
-  'ISH TALKS ABOUT GROWING OUT HIS HAIR',
-  'ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING',
-  'ISH TALKS ABOUT BREAKING HIS WRIST',
-  'ISH MENTIONS MARVEL',
-  'ISH PUNCHES SOMEONE TO DEATH',
-  'ISH ACCIDENTIALLY KILLS HIMSELF',
-  'ISH SAYS SOMETHING IN SPANISH',
-  'ISH THROWS A GRENADE',
-  'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
-  'ISH MENTIONS LETTERBOX',
-  'ISH TALKS ABOUT HIS OLD SAFETY JOB',
-  'BABYZED SAYS GODDAMMIT',
-  'LADYZED SAYS "OMG BORING"',
-  'ISH MENTIONS BOTTLE OPENING FEES',
-  'ISH GOES RED THIRSTY',
-  'ISH EATS A HUMAN STEAK',
-  'ISH TALKS ABOUT AN ATTRACTIVE FEMALE ACTRESS',
-  'ISH SAYS SOMETHING SUS ABOUT A MALE ACTOR',
-  'ISH TALKS ABOUT BUYING A NEW HOUSE',
-  '"GEEZ LOUISE"',
-  'BLACK AND WHITE STREAM DUE TO LACK OF BLOOD',
-  'MY SUMMER CAR GETS MENTIONED',
-  'ISH EATS A COSMIC CRISP APPLE', 
-  '"OI VEY"',
-  'VICTORY BEER',
-  'ISH MENTIONS HE WAS AN EXTRA ON AMISH MAFIA',
-  'DEEZ NUTS JOKE',
-  'ISH MENTIONS REDLINE',
-  'TEAM KILL',
-  'ISH GETS SCARED BY SCARE DONO',
-  'SOMEONE MAKES ROBOT LADY GARGLE',
-  'ISH MENTIONS GAME OF THRONES',
-  '"I SAW A POST ON REDDIT"',
-  'ISH SINGS BEAR NECESSETIES',
-  'ISH MENTIONS PRAGUE',
-  'ISH SAYS "PICKLE"',
-  'ISH MENTIONS BILL',
-  'ISH DIES',
-  'DAYZ BUGS',
-  'ISH GETS CUT BY A ZOMBIE',
-  'ISH GETS KNOCKED OUT',
-  'FERRO SHOT',
-  '"I FOUND A _____ THERE"',
-  'ISH BREAKS A LEG',
+  'MORNING F','ISH TALKS ABOUT RUN CLUB','ISH STRIPS','ISH MISSES A SHOT AGAINST A PLAYER',
+  'ISH MISSES A SHOT AGAINST AN ANIMAL','BABYZED PHOTO','ISH PROMOTES NEW YT VIDEO','"BURY"',
+  'ISH GOES RED HUNGRY','ISH GASLIGHTS HIMSELF ABOUT BINGO','ISH MENTIONS BOTTLE OPENING FEES',
+  'ISH TALKS ABOUT SKATEBOARDING','ISH DRINKS AT A WELL','ISH TALKS ABOUT COMCAST','DAD JOKE IS TOLD',
+  'ISH GETS A KILL','HYPE TRAIN','ISH PUTS UP TIME OUT SYMBOL WHILE AFK','ISH PICKS UP AN SKS',
+  'ISH DOES A DESK POP','ISH TALKS ABOUT GROWING OUT HIS HAIR','ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING',
+  'ISH TALKS ABOUT BREAKING HIS WRIST','ISH MENTIONS MARVEL','ISH PUNCHES SOMEONE TO DEATH','ISH ACCIDENTIALLY KILLS HIMSELF',
+  'ISH SAYS SOMETHING IN SPANISH','ISH THROWS A GRENADE','ISH MENTIONS THAT HE LISTENED TO A PODCAST','ISH MENTIONS LETTERBOX',
+  'ISH TALKS ABOUT HIS OLD SAFETY JOB','BABYZED SAYS GODDAMMIT','LADYZED SAYS "OMG BORING"','ISH MENTIONS BOTTLE OPENING FEES',
+  'ISH GOES RED THIRSTY','ISH EATS A HUMAN STEAK','ISH TALKS ABOUT AN ATTRACTIVE FEMALE ACTRESS','ISH SAYS SOMETHING SUS ABOUT A MALE ACTOR',
+  'ISH TALKS ABOUT BUYING A NEW HOUSE','"GEEZ LOUISE"','BLACK AND WHITE STREAM DUE TO LACK OF BLOOD','MY SUMMER CAR GETS MENTIONED',
+  'ISH EATS A COSMIC CRISP APPLE','"OI VEY"','VICTORY BEER','ISH MENTIONS HE WAS AN EXTRA ON AMISH MAFIA','DEEZ NUTS JOKE',
+  'ISH MENTIONS REDLINE','TEAM KILL','ISH GETS SCARED BY SCARE DONO','SOMEONE MAKES ROBOT LADY GARGLE','ISH MENTIONS GAME OF THRONES',
+  '"I SAW A POST ON REDDIT"','ISH SINGS BEAR NECESSETIES','ISH MENTIONS PRAGUE','ISH SAYS "PICKLE"','ISH MENTIONS BILL',
+  'ISH DIES','DAYZ BUGS','ISH GETS CUT BY A ZOMBIE','ISH GETS KNOCKED OUT','FERRO SHOT','"I FOUND A _____ THERE"','ISH BREAKS A LEG',
   'ISH PUTS ON AN ORANGE TULUNE'
 ];
 
