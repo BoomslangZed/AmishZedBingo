@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>ISH Bingo PDF Generator</title>
+  <!-- jsPDF library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
@@ -14,18 +15,19 @@
       margin-bottom: 30px;
     }
 
+    /* Green button styling */
     button {
       padding: 15px 30px;
       font-size: 18px;
       cursor: pointer;
-      background-color: #4CAF50;
+      background-color: #4CAF50; /* Green */
       color: white;
       border: none;
       border-radius: 5px;
     }
 
     button:hover {
-      background-color: #45a049;
+      background-color: #45a049; /* Darker green on hover */
     }
   </style>
 </head>
@@ -33,7 +35,8 @@
 
 <h1>🎉 ISH Bingo PDF Generator</h1>
 
-<button onclick="generateAndDownloadPDF()">Generate Bingo PDF</button>
+<!-- Updated button text -->
+<button onclick="generateAndDownloadPDF()">CLICK TO GENERATE</button>
 
 <script>
 const { jsPDF } = window.jspdf;
@@ -69,16 +72,19 @@ const phrases = [
   'ORANGE TULUNE'
 ];
 
+// Generate random Bingo card with FREE space
 function generateRandomCard() {
-  const shuffled = [...phrases].sort(() => 0.5 - Math.random());
+  const shuffled = [...phrases].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "FREE"); // FREE space in center
+  selected.splice(12, 0, "FREE"); // FREE in the center
   return selected;
 }
 
+// Generate PDF and download
 function generateAndDownloadPDF() {
   const card = generateRandomCard();
   const doc = new jsPDF();
+
   const pageWidth = doc.internal.pageSize.getWidth();
 
   // Title
@@ -87,25 +93,20 @@ function generateAndDownloadPDF() {
 
   const startX = 20;
   const startY = 40;
-  const cellSize = 30;
+  const cellSize = 35;
+  doc.setFontSize(9);
 
-  doc.setFontSize(8);
-
-  // Draw grid and fill cells
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
       const x = startX + col * cellSize;
       const y = startY + row * cellSize;
       const text = card[row * 5 + col];
 
-      doc.rect(x, y, cellSize, cellSize); // cell border
+      doc.rect(x, y, cellSize, cellSize); // Draw cell
 
-      // split text if too long
       const splitText = doc.splitTextToSize(text, cellSize - 4);
-      doc.text(splitText, x + cellSize / 2, y + 8, {
-        align: "center",
-        maxWidth: cellSize - 4
-      });
+      const textY = y + (cellSize / 2) - (splitText.length * 2);
+      doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
     }
   }
 
