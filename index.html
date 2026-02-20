@@ -72,8 +72,23 @@ const phrases = [
 function generateRandomCard() {
   const shuffled = [...phrases].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "★"); // middle cell as star
+  selected.splice(12, 0, "FREE"); // center cell placeholder
   return selected;
+}
+
+// Draw a simple star shape in the center of a cell
+function drawStar(doc, centerX, centerY, radius, points = 5) {
+  const step = Math.PI / points;
+  const path = [];
+  for (let i = 0; i < 2 * points; i++) {
+    const r = (i % 2 === 0) ? radius : radius / 2;
+    const x = centerX + r * Math.sin(i * step);
+    const y = centerY - r * Math.cos(i * step);
+    path.push([x, y]);
+  }
+  // Draw lines
+  doc.setLineWidth(0.5);
+  doc.lines(path.map((pt, i) => [pt[0]-centerX, pt[1]-centerY]), centerX, centerY);
 }
 
 function generateCardWithName() {
@@ -85,7 +100,7 @@ function generateCardWithName() {
 
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Use 'times' font which supports the star
+  // Top title
   doc.setFont("times", "bold");
   doc.setFontSize(22);
   doc.text("AmishZed Bingo", pageWidth / 2, 20, { align: "center" });
@@ -99,8 +114,6 @@ function generateCardWithName() {
   const startY = 40;
   const cellSize = 35;
   doc.setFontSize(10);
-
-  // Thicker grid lines
   doc.setLineWidth(0.8);
 
   // Draw 5x5 grid
@@ -112,22 +125,26 @@ function generateCardWithName() {
 
       doc.rect(x, y, cellSize, cellSize);
 
-      // Center the text, including star
-      const splitText = doc.splitTextToSize(text, cellSize - 4);
-      const textY = y + (cellSize / 2) - ((splitText.length - 1) * 2);
-      doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
+      // Center cell is FREE with a star
+      if (row === 2 && col === 2) {
+        doc.setFontSize(8);
+        doc.text("FREE SPACE", x + cellSize / 2, y + cellSize / 2 - 3, { align: "center" });
+        drawStar(doc, x + cellSize / 2, y + cellSize / 2 + 6, 5); // star under text
+      } else {
+        const splitText = doc.splitTextToSize(text, cellSize - 4);
+        const textY = y + (cellSize / 2) - ((splitText.length - 1) * 2);
+        doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
+      }
     }
   }
 
   // Date at bottom
   const today = new Date();
-  const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
-  doc.setFont("times", "normal");
   doc.setFontSize(12);
   doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
 
   // Save PDF
-  const filename = `AmishZed Bingo ${dateStr}.pdf`;
+  const filename = `AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
   doc.save(filename);
 }
 </script>
