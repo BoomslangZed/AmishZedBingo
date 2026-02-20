@@ -48,7 +48,7 @@ const phrases = [
   'ISH TALKS ABOUT SKATEBOARDING',
   'ISH TALKS ABOUT COMCAST',
   'MY SUMMER CAR GETS MENTIONED',
-  'ISH EATS A COSMIC CRISP APPLE', // corrected
+  'ISH EATS A COSMIC CRISP APPLE', 
   '"OI VEY"',
   'ISH GETS SCARED BY SCARE DONO',
   'SOMEONE MAKES ROBOT LADY GARGLE',
@@ -69,7 +69,7 @@ const phrases = [
 function generateRandomCard() {
   const shuffled = [...phrases].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "★"); // middle cell with star
+  selected.splice(12, 0, "★"); // middle cell as star
   return selected;
 }
 
@@ -82,36 +82,36 @@ function generateCardWithName() {
 
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Top title
+  // Use 'times' font which supports the star
+  doc.setFont("times", "bold");
   doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
   doc.text("AmishZed Bingo", pageWidth / 2, 20, { align: "center" });
 
   // Player name below title
+  doc.setFont("times", "normal");
   doc.setFontSize(14);
-  doc.setFont("helvetica", "normal");
   doc.text(playerName, pageWidth / 2, 30, { align: "center" });
 
   const startX = 20;
   const startY = 40;
   const cellSize = 35;
-  doc.setFontSize(9);
+  doc.setFontSize(10);
 
   // Thicker grid lines
   doc.setLineWidth(0.8);
 
-  // Draw 5x5 grid with correct center star
+  // Draw 5x5 grid
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
       const x = startX + col * cellSize;
       const y = startY + row * cellSize;
-      let text = card[row * 5 + col];
-
-      // center alignment for FREE star
-      const splitText = doc.splitTextToSize(text, cellSize - 4);
-      const textY = y + (cellSize / 2) - ((splitText.length - 1) * 2);
+      const text = card[row * 5 + col];
 
       doc.rect(x, y, cellSize, cellSize);
+
+      // Center the text, including star
+      const splitText = doc.splitTextToSize(text, cellSize - 4);
+      const textY = y + (cellSize / 2) - ((splitText.length - 1) * 2);
       doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
     }
   }
@@ -119,6 +119,7 @@ function generateCardWithName() {
   // Date at bottom
   const today = new Date();
   const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
+  doc.setFont("times", "normal");
   doc.setFontSize(12);
   doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth / 2, startY + 5*cellSize + 15, { align: "center" });
 
