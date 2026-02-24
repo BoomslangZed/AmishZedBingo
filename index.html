@@ -32,6 +32,12 @@
       background-color: #45a049;
     }
 
+    #cardCounter{
+      font-size:18px;
+      margin-top:15px;
+      font-weight:bold;
+    }
+
     #rules {
       max-width: 450px;
       margin: 30px auto;
@@ -42,7 +48,6 @@
       box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
     }
 
-    /* MODAL STYLES */
     #nameModal {
       display: none;
       position: fixed;
@@ -94,6 +99,8 @@
 
 <button onclick="openModal()">CLICK TO GENERATE</button>
 
+<p id="cardCounter">🎴 Cards Generated: 0</p>
+
 <div id="rules">
   <h2>📝 How to Play ISH Bingo</h2>
   <ol>
@@ -104,7 +111,6 @@
   </ol>
 </div>
 
-<!-- MODAL -->
 <div id="nameModal">
   <div class="modal-content">
     <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -142,6 +148,14 @@ const phrases = [
 'ISH TALKS ABOUT BREAKING HIS WRIST','ISH SAYS "THANK YOU, THANK YOU"','CHAT GIFTS MERCH'
 ];
 
+function updateCounterDisplay(){
+  const count = localStorage.getItem("bingoCardCount") || 0;
+  document.getElementById("cardCounter").textContent =
+    "🎴 Cards Generated: " + count;
+}
+
+updateCounterDisplay();
+
 function openModal() {
   document.getElementById("nameModal").style.display = "flex";
   document.getElementById("playerNameInput").focus();
@@ -176,6 +190,7 @@ function startBingo() {
 }
 
 function generateCard(playerName) {
+
   const card = generateRandomCard();
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -197,6 +212,7 @@ function generateCard(playerName) {
 
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
+
       const x = startX + col * cellSize;
       const y = startY + row * cellSize;
       const text = card[row * 5 + col];
@@ -205,6 +221,7 @@ function generateCard(playerName) {
 
       const splitText = doc.splitTextToSize(text, cellSize - 4);
       const textY = y + cellSize / 2 - ((splitText.length - 1) * 2);
+
       doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
     }
   }
@@ -215,6 +232,11 @@ function generateCard(playerName) {
 
   const filename = `AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
   doc.save(filename);
+
+  let count = parseInt(localStorage.getItem("bingoCardCount") || "0");
+  count++;
+  localStorage.setItem("bingoCardCount", count);
+  updateCounterDisplay();
 }
 </script>
 
