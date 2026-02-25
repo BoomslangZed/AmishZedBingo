@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +35,7 @@
 
     #cardCounter{
       font-size:18px;
-      margin-top:15px;
+      margin-top:20px;
       font-weight:bold;
     }
 
@@ -46,6 +47,12 @@
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+    }
+
+    footer{
+      margin-top:60px;
+      font-size:14px;
+      color:#555;
     }
 
     #nameModal {
@@ -99,8 +106,6 @@
 
 <button onclick="openModal()">CLICK TO GENERATE</button>
 
-<p id="cardCounter">🎴 Cards Generated: 0</p>
-
 <div id="rules">
   <h2>📝 How to Play ISH Bingo</h2>
   <ol>
@@ -109,6 +114,8 @@
     <li>🗂️ Download your Bingo card PDF.</li>
     <li>🎉 When you get Bingo, share it in chat!</li>
   </ol>
+
+  <p id="cardCounter" data-current="0">🎲 Cards Generated: 0</p>
 </div>
 
 <div id="nameModal">
@@ -120,6 +127,10 @@
     <button onclick="startBingo()">Generate Card</button>
   </div>
 </div>
+
+<footer>
+Made by Boomslang
+</footer>
 
 <script>
 const { jsPDF } = window.jspdf;
@@ -149,9 +160,21 @@ const phrases = [
 ];
 
 function updateCounterDisplay(){
-  const count = localStorage.getItem("bingoCardCount") || 0;
-  document.getElementById("cardCounter").textContent =
-    "🎴 Cards Generated: " + count;
+  const target = parseInt(localStorage.getItem("bingoCardCount") || "0");
+  const counter = document.getElementById("cardCounter");
+
+  let current = parseInt(counter.dataset.current || "0");
+
+  const step = () => {
+    if(current < target){
+      current++;
+      counter.dataset.current = current;
+      counter.textContent = "🎲 Cards Generated: " + current;
+      requestAnimationFrame(step);
+    }
+  };
+
+  step();
 }
 
 updateCounterDisplay();
@@ -242,3 +265,4 @@ function generateCard(playerName) {
 
 </body>
 </html>
+```
