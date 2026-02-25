@@ -53,13 +53,6 @@
       box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
     }
 
-    #cardCounter{
-      font-size:18px;
-      margin-top:20px;
-      font-weight:bold;
-      text-align:center;
-    }
-
     footer{
       margin-top:auto;
       padding:40px 20px;
@@ -132,8 +125,6 @@
     <li>🗂️ Download your Bingo card PDF.</li>
     <li>🎉 When you get Bingo, share it in chat!</li>
   </ol>
-
-  <p id="cardCounter" data-current="0">🎲 Cards Generated: 0</p>
 </div>
 
 <div id="nameModal">
@@ -178,26 +169,6 @@ const phrases = [
 'ISH TELLS SOMEONE HE IS A SINGER','ISH TEAMS UP WITH A RANDOM','ISH SAYS "LIKE"',
 'ISH TALKS ABOUT BREAKING HIS WRIST','ISH SAYS "THANK YOU, THANK YOU"','CHAT GIFTS MERCH'
 ];
-
-function updateCounterDisplay(){
-  const target = parseInt(localStorage.getItem("bingoCardCount") || "0");
-  const counter = document.getElementById("cardCounter");
-
-  let current = parseInt(counter.dataset.current || "0");
-
-  const step = () => {
-    if(current < target){
-      current++;
-      counter.dataset.current = current;
-      counter.textContent = "🎲 Cards Generated: " + current;
-      requestAnimationFrame(step);
-    }
-  };
-
-  step();
-}
-
-updateCounterDisplay();
 
 function openModal() {
   document.getElementById("nameModal").style.display = "flex";
@@ -275,11 +246,6 @@ function generateCard(playerName) {
 
   const filename = `AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
   doc.save(filename);
-
-  let count = parseInt(localStorage.getItem("bingoCardCount") || "0");
-  count++;
-  localStorage.setItem("bingoCardCount", count);
-  updateCounterDisplay();
 }
 </script>
 
