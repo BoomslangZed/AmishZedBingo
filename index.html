@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +11,9 @@
       text-align: center;
       margin-top: 50px;
       background: #f4f4f4;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
     }
 
     h1 {
@@ -33,12 +35,6 @@
       background-color: #45a049;
     }
 
-    #cardCounter{
-      font-size:18px;
-      margin-top:20px;
-      font-weight:bold;
-    }
-
     #rules {
       max-width: 450px;
       margin: 30px auto;
@@ -49,10 +45,22 @@
       box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
     }
 
+    #cardCounter{
+      font-size:18px;
+      margin-top:20px;
+      font-weight:bold;
+      text-align:center;
+    }
+
     footer{
-      margin-top:60px;
+      margin-top:auto;
+      padding:40px 20px;
       font-size:14px;
       color:#555;
+      max-width:700px;
+      margin-left:auto;
+      margin-right:auto;
+      line-height:1.6;
     }
 
     #nameModal {
@@ -129,7 +137,9 @@
 </div>
 
 <footer>
-Made by Boomslang
+To AmishZed, thanks for the hours of entertainment and fun.  
+You are the light that shines during our mundane days in the office or at home.  
+We truly appreciate you and your less than stellar gameplay. ❤️ -Chat
 </footer>
 
 <script>
@@ -265,4 +275,3 @@ function generateCard(playerName) {
 
 </body>
 </html>
-```
