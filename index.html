@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <title>AmishZed Bingo Generator</title>
 
@@ -12,110 +13,95 @@
 <style>
 
 body{
-font-family:Arial, Helvetica, sans-serif;
-margin:0;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
+font-family:Arial,sans-serif;
 text-align:center;
-}
-
-.container{
-max-width:900px;
-margin:auto;
-padding:50px 20px;
+margin:0;
+padding-top:50px;
+background:#f4f4f4;
+min-height:100vh;
+display:flex;
+flex-direction:column;
 }
 
 h1{
-font-size:42px;
 margin-bottom:30px;
 }
 
-.buttons{
-margin-bottom:40px;
+.buttonContainer{
+text-align:center;
+margin-bottom:20px;
 }
 
 button{
-padding:15px 25px;
+padding:15px 30px;
 font-size:18px;
-border:none;
-border-radius:8px;
-margin:10px;
 cursor:pointer;
-background:linear-gradient(45deg,#00c6ff,#0072ff);
+background-color:#4CAF50;
 color:white;
-transition:0.2s;
+border:none;
+border-radius:6px;
+transition:0.3s;
+margin:5px;
 }
 
 button:hover{
-transform:scale(1.05);
-}
-
-#board{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:8px;
-margin-top:30px;
-}
-
-.cell{
-background:white;
-color:#333;
-border-radius:6px;
-padding:10px;
-min-height:90px;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-font-size:14px;
-font-weight:bold;
-}
-
-.free{
-background:#27ae60;
-color:white;
+background-color:#45a049;
 }
 
 #rules{
-margin-top:40px;
-background:rgba(255,255,255,0.1);
+max-width:450px;
+margin:30px auto;
+text-align:left;
+background:white;
 padding:20px;
 border-radius:10px;
+box-shadow:0px 5px 20px rgba(0,0,0,0.1);
 }
 
 footer{
-margin-top:40px;
+margin-top:auto;
+padding:40px 20px;
 font-size:14px;
-opacity:0.8;
+color:#555;
+max-width:700px;
+margin-left:auto;
+margin-right:auto;
+line-height:1.6;
 }
 
-/* modal */
-
-#popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.8);
+#nameModal{
 display:none;
-align-items:center;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
 justify-content:center;
+align-items:center;
+z-index:999;
 }
 
-.popupBox{
+.modal-content{
 background:white;
-color:black;
 padding:30px;
 border-radius:10px;
 width:300px;
+text-align:center;
+position:relative;
 }
 
-.popupBox input{
+.modal-content input{
 width:100%;
 padding:10px;
+margin-top:15px;
 font-size:16px;
-margin-top:10px;
+box-sizing:border-box;
+}
+
+.close-btn{
+position:absolute;
+right:15px;
+top:10px;
+cursor:pointer;
+font-size:24px;
 }
 
 </style>
@@ -124,69 +110,81 @@ margin-top:10px;
 
 <body>
 
-<div class="container">
+<h1>🎉 AmishZed Bingo Generator 🎉</h1>
 
-<h1>AmishZed Bingo Generator</h1>
+<div class="buttonContainer">
 
-<div class="buttons">
-
-<button onclick="openPopup('dayz')">
-Generate DayZ Card
+<button onclick="openModal('dayz')">
+🎮 Generate DayZ Bingo Card
 </button>
 
-<button onclick="openPopup('msc')">
-Generate My Summer Car Card
+<button onclick="openModal('msc')">
+🚗 Generate My Summer Car Bingo Card
 </button>
 
 </div>
 
-<div id="board"></div>
-
 <div id="rules">
 
-<h2>How To Play</h2>
+<h2>📝 How to Play ISH Bingo</h2>
 
-<ol style="text-align:left;">
-<li>Click the game you want.</li>
-<li>Enter your username.</li>
-<li>Your bingo card will generate.</li>
-<li>Download the PDF.</li>
-<li>Mark squares during the stream.</li>
-<li>When you get BINGO, share it in chat.</li>
+<ol>
+<li>🎯 Choose the game bingo card.</li>
+<li>👤 Enter your username.</li>
+<li>📄 Download your Bingo card PDF.</li>
+<li>✔️ Mark squares while watching the stream.</li>
+<li>🏆 When you get Bingo share it in chat!</li>
 </ol>
+
+</div>
+
+<div id="nameModal">
+
+<div class="modal-content">
+
+<span class="close-btn" onclick="closeModal()">&times;</span>
+
+<h3>👤 Enter Your Name</h3>
+
+<input type="text" id="playerNameInput" placeholder="Your name"/>
+
+<br><br>
+
+<button onclick="startBingo()">📄 Generate Card</button>
+
+</div>
 
 </div>
 
 <footer>
 
-To AmishZed, thanks for the hours of entertainment and fun.  
-You are the light that shines during our mundane days. - Chat
+💬 To AmishZed, thanks for the hours of entertainment and fun.  
+You are the light that shines during our mundane days in the office or at home.  
+We truly appreciate you and your less than stellar gameplay. ❤️ - Chat
 
 </footer>
-
-</div>
-
-<div id="popup">
-
-<div class="popupBox">
-
-<h3>Enter Username</h3>
-
-<input id="username" placeholder="Your name">
-
-<br><br>
-
-<button onclick="generateCard()">Generate Bingo Card</button>
-
-</div>
-
-</div>
 
 <script>
 
 const { jsPDF } = window.jspdf;
 
-let selectedGame="";
+let selectedGame="dayz";
+
+function openModal(game){
+selectedGame=game;
+document.getElementById("nameModal").style.display="flex";
+document.getElementById("playerNameInput").focus();
+}
+
+function closeModal(){
+document.getElementById("nameModal").style.display="none";
+}
+
+window.onclick=function(e){
+if(e.target===document.getElementById("nameModal")){
+closeModal();
+}
+}
 
 const dayzPhrases=[
 'MORNING F','ISH TALKS ABOUT RUN CLUB','ISH STRIPS','ISH MISSES A SHOT AGAINST A PLAYER','ISH MISSES A SHOT AGAINST AN ANIMAL',
@@ -210,83 +208,85 @@ const mscPhrases=[
 'ISH ASKS CHAT WHAT TOOL HE IS SUPPOSED TO USE','ISH BUYS A CAR PART'
 ];
 
-function openPopup(game){
-selectedGame=game;
-document.getElementById("popup").style.display="flex";
+function shuffle(array){
+for(let i=array.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[array[i],array[j]]=[array[j],array[i]];
+}
+return array;
 }
 
-function generateCard(){
+function generateRandomCard(){
 
-const username=document.getElementById("username").value || "Anonymous";
+let phrases=(selectedGame==="msc")?mscPhrases:dayzPhrases;
 
-document.getElementById("popup").style.display="none";
+const shuffled=shuffle([...phrases]);
 
-let phrases=selectedGame==="msc"?mscPhrases:dayzPhrases;
-
-let shuffled=[...phrases].sort(()=>0.5-Math.random());
-
-let selected=shuffled.slice(0,24);
+const selected=shuffled.slice(0,24);
 
 selected.splice(12,0,"FREE SPACE");
 
-drawBoard(selected);
-
-generatePDF(selected,username);
+return selected;
 
 }
 
-function drawBoard(list){
+function startBingo(){
 
-const board=document.getElementById("board");
-board.innerHTML="";
+let playerName=document.getElementById("playerNameInput").value.trim();
 
-list.forEach(item=>{
+if(!playerName) playerName="Anonymous";
 
-let cell=document.createElement("div");
+closeModal();
 
-cell.className="cell";
-
-if(item==="FREE SPACE") cell.classList.add("free");
-
-cell.innerText=item;
-
-board.appendChild(cell);
-
-});
+generateCard(playerName);
 
 }
 
-function generatePDF(card,username){
+function generateCard(playerName){
+
+const card=generateRandomCard();
 
 const doc=new jsPDF();
 
-doc.setFontSize(20);
-doc.text("AmishZed Bingo",105,20,{align:"center"});
+const pageWidth=doc.internal.pageSize.getWidth();
+
+doc.setFont("helvetica","bold");
+doc.setFontSize(22);
+doc.text("AmishZed Bingo",pageWidth/2,20,{align:"center"});
+
+doc.setFont("helvetica","normal");
+doc.setFontSize(14);
+doc.text(playerName,pageWidth/2,30,{align:"center"});
+
+const startX=20;
+const startY=50;
+const cellSize=35;
+
+doc.setFontSize(10);
+
+for(let row=0;row<5;row++){
+
+for(let col=0;col<5;col++){
+
+const x=startX+col*cellSize;
+const y=startY+row*cellSize;
+
+const text=card[row*5+col];
+
+doc.rect(x,y,cellSize,cellSize);
+
+const splitText=doc.splitTextToSize(text,cellSize-4);
+
+doc.text(splitText,x+cellSize/2,y+cellSize/2,{align:"center"});
+
+}
+
+}
+
+const today=new Date();
 
 doc.setFontSize(12);
-doc.text(username,105,30,{align:"center"});
-
-let x=20;
-let y=40;
-let size=34;
-
-doc.setFontSize(9);
-
-for(let r=0;r<5;r++){
-
-for(let c=0;c<5;c++){
-
-let text=card[r*5+c];
-
-doc.rect(x+c*size,y+r*size,size,size);
-
-let split=doc.splitTextToSize(text,size-4);
-
-doc.text(split,x+c*size+size/2,y+r*size+size/2,{align:"center"});
-
-}
-
-}
+doc.text(`Date: ${today.toLocaleDateString()}`,pageWidth/2,startY+5*cellSize+15,{align:"center"});
 
 doc.save("AmishZed_Bingo.pdf");
 
