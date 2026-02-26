@@ -1,11 +1,9 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>AmishZed Bingo Generator</title>
 <link rel="icon" type="image/png" href="favicon.png"/>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
@@ -172,13 +170,17 @@ const { jsPDF } = window.jspdf;
 
 let selectedGame="dayz";
 
+/* Modal functions */
+
 function openModal(game){
 
 selectedGame=game;
 
 document.getElementById("nameModal").style.display="flex";
 
+setTimeout(()=>{
 document.getElementById("playerNameInput").focus();
+},50);
 
 }
 
@@ -187,6 +189,8 @@ function closeModal(){
 document.getElementById("nameModal").style.display="none";
 
 }
+
+/* Close modal if clicking outside */
 
 window.onclick=function(e){
 
@@ -198,11 +202,19 @@ closeModal();
 
 }
 
+/* Wait until page loads before attaching events */
+
+window.addEventListener("DOMContentLoaded",function(){
+
 document.getElementById("playerNameInput").addEventListener("keypress",function(e){
 
 if(e.key==="Enter") startBingo();
 
 });
+
+});
+
+/* Bingo phrases */
 
 const dayzPhrases=[
 
@@ -229,6 +241,8 @@ const mscPhrases=[
 'ISH ASKS CHAT WHAT TOOL HE IS SUPPOSED TO USE','ISH BUYS A CAR PART'
 
 ];
+
+/* Shuffle */
 
 function shuffle(array){
 
@@ -308,7 +322,9 @@ doc.rect(x,y,cellSize,cellSize);
 
 const splitText=doc.splitTextToSize(text,cellSize-4);
 
-doc.text(splitText,x+cellSize/2,y+cellSize/2,{align:"center"});
+const textY=y+(cellSize/2)-((splitText.length-1)*3);
+
+doc.text(splitText,x+cellSize/2,textY,{align:"center"});
 
 }
 
