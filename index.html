@@ -1,252 +1,334 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AmishZed Bingo PDF Generator</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>AmishZed Bingo Generator</title>
+<link rel="icon" type="image/png" href="favicon.png"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding-top: 50px;
-      background: #f4f4f4;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+<style>
 
-    h1 {
-      margin-bottom: 30px;
-    }
+body{
+font-family:Arial,sans-serif;
+text-align:center;
+margin:0;
+padding-top:50px;
+background:#f4f4f4;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+}
 
-    .buttonContainer{
-      text-align:center;
-      margin-bottom:20px;
-    }
+h1{
+margin-bottom:30px;
+}
 
-    button {
-      padding: 15px 30px;
-      font-size: 18px;
-      cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      transition: 0.3s;
-      width:auto;
-      display:inline-block;
-    }
+.buttonContainer{
+text-align:center;
+margin-bottom:20px;
+}
 
-    button:hover {
-      background-color: #45a049;
-    }
+button{
+padding:15px 30px;
+font-size:18px;
+cursor:pointer;
+background-color:#4CAF50;
+color:white;
+border:none;
+border-radius:6px;
+transition:0.3s;
+width:auto;
+display:inline-block;
+margin:5px;
+}
 
-    #rules {
-      max-width: 450px;
-      margin: 30px auto;
-      text-align: left;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
-    }
+button:hover{
+background-color:#45a049;
+}
 
-    footer{
-      margin-top:auto;
-      padding:40px 20px;
-      font-size:14px;
-      color:#555;
-      max-width:700px;
-      margin-left:auto;
-      margin-right:auto;
-      line-height:1.6;
-    }
+#rules{
+max-width:450px;
+margin:30px auto;
+text-align:left;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0px 5px 20px rgba(0,0,0,0.1);
+}
 
-    #nameModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
+footer{
+margin-top:auto;
+padding:40px 20px;
+font-size:14px;
+color:#555;
+max-width:700px;
+margin-left:auto;
+margin-right:auto;
+line-height:1.6;
+}
 
-    .modal-content {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      width: 300px;
-      text-align: center;
-      animation: fadeIn 0.3s ease;
-      position: relative;
-    }
+#nameModal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+z-index:999;
+}
 
-    .modal-content input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 15px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
+.modal-content{
+background:white;
+padding:30px;
+border-radius:10px;
+width:300px;
+text-align:center;
+animation:fadeIn 0.3s ease;
+position:relative;
+}
 
-    .close-btn {
-      position: absolute;
-      right: 15px;
-      top: 10px;
-      cursor: pointer;
-      font-size: 24px;
-      line-height: 1;
-      user-select: none;
-    }
+.modal-content input{
+width:100%;
+padding:10px;
+margin-top:15px;
+font-size:16px;
+box-sizing:border-box;
+}
 
-    @keyframes fadeIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-  </style>
+.close-btn{
+position:absolute;
+right:15px;
+top:10px;
+cursor:pointer;
+font-size:24px;
+line-height:1;
+user-select:none;
+}
+
+@keyframes fadeIn{
+from{transform:scale(0.9);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>🎉 AmishZed Bingo PDF Generator 🎉</h1>
+<h1>🎉 AmishZed Bingo Generator 🎉</h1>
 
 <div class="buttonContainer">
-<button onclick="openModal()">CLICK TO GENERATE</button>
+
+<button onclick="openModal('dayz')">
+🎮 Generate DayZ Bingo Card
+</button>
+
+<button onclick="openModal('msc')">
+🚗 Generate My Summer Car Bingo Card
+</button>
+
 </div>
 
 <div id="rules">
-  <h2>📝 How to Play ISH Bingo</h2>
-  <ol>
-    <li>🖱️ Click the <strong>"CLICK TO GENERATE"</strong> button.</li>
-    <li>🙋‍♂️ Enter your username.</li>
-    <li>🗂️ Download your Bingo card PDF.</li>
-    <li>🎉 When you get Bingo, share it in chat!</li>
-  </ol>
+
+<h2>📝 How to Play ISH Bingo</h2>
+
+<ol>
+<li>Choose the game bingo card.</li>
+<li>Enter your username.</li>
+<li>Download your Bingo card PDF.</li>
+<li>Mark squares while watching the stream.</li>
+<li>When you get Bingo share it in chat!</li>
+</ol>
+
 </div>
 
 <div id="nameModal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">&times;</span>
-    <h3>Enter Your Name</h3>
-    <input type="text" id="playerNameInput" placeholder="Your name" />
-    <br><br>
-    <button onclick="startBingo()">Generate Card</button>
-  </div>
+
+<div class="modal-content">
+
+<span class="close-btn" onclick="closeModal()">&times;</span>
+
+<h3>Enter Your Name</h3>
+
+<input type="text" id="playerNameInput" placeholder="Your name"/>
+
+<br><br>
+
+<button onclick="startBingo()">Generate Card</button>
+
+</div>
+
 </div>
 
 <footer>
+
 To AmishZed, thanks for the hours of entertainment and fun.  
 You are the light that shines during our mundane days in the office or at home.  
 We truly appreciate you and your less than stellar gameplay. ❤️ -Chat
+
 </footer>
 
 <script>
+
 const { jsPDF } = window.jspdf;
 
-const phrases = [
-'MORNING F','ISH TALKS ABOUT RUN CLUB','ISH STRIPS','ISH MISSES A SHOT AGAINST A PLAYER',
-'ISH MISSES A SHOT AGAINST AN ANIMAL','BABYZED PHOTO','ISH PROMOTES NEW YT VIDEO','"BURY"',
-'ISH GOES RED HUNGRY','ISH GASLIGHTS HIMSELF ABOUT BINGO','ISH MENTIONS BOTTLE OPENING FEES',
-'ISH TALKS ABOUT SKATEBOARDING','ISH DRINKS AT A WELL','ISH TALKS ABOUT COMCAST','DAD JOKE IS TOLD',
-'ISH GETS A KILL','HYPE TRAIN','ISH PUTS UP TIME OUT SYMBOL WHILE AFK','ISH PICKS UP AN SKS',
-'ISH DOES A DESK POP','ISH TALKS ABOUT GROWING OUT HIS HAIR','ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING',
-'ISH TALKS ABOUT BREAKING HIS WRIST','ISH MENTIONS MARVEL','ISH PUNCHES SOMEONE TO DEATH','ISH ACCIDENTALLY KILLS HIMSELF',
-'ISH SAYS SOMETHING IN SPANISH','ISH THROWS A GRENADE','ISH MENTIONS THAT HE LISTENED TO A PODCAST','ISH MENTIONS LETTERBOX',
-'ISH TALKS ABOUT HIS OLD SAFETY JOB','BABYZED SAYS GODDAMMIT','LADYZED SAYS "OMG BORING"',
-'ISH GOES RED THIRSTY','ISH EATS A HUMAN STEAK','ISH TALKS ABOUT AN ATTRACTIVE FEMALE ACTRESS',
-'ISH SAYS SOMETHING SUS ABOUT A MALE ACTOR','ISH TALKS ABOUT BUYING A NEW HOUSE',
-'"GEEZ LOUISE"','BLACK AND WHITE STREAM DUE TO LACK OF BLOOD','MY SUMMER CAR GETS MENTIONED',
-'ISH EATS A COSMIC CRISP APPLE','"OI VEY"','VICTORY BEER','ISH MENTIONS HE WAS AN EXTRA ON AMISH MAFIA',
-'DEEZ NUTS JOKE','ISH MENTIONS REDLINE','TEAM KILL BETTER KNOWN AS AN ISHING','ISH GETS SCARED BY SCARE DONO',
-'SOMEONE MAKES ROBOT LADY GARGLE','ISH MENTIONS GAME OF THRONES','"I SAW A POST ON REDDIT"',
-'ISH SINGS BEAR NECESSETIES','ISH MENTIONS PRAGUE','ISH SAYS "PICKLE"','ISH MENTIONS BILL',
-'ISH DIES','DAYZ BUGS','ISH GETS CUT BY A ZOMBIE','ISH GETS KNOCKED OUT','FERRO SHOT',
-'"I FOUND A _____ THERE"','ISH BREAKS A LEG','ISH PUTS ON AN ORANGE TULUNE',
-'ISH ACCIDENTALLY RUINS AN ITEM','ISH SAYS 6 7','ISH PICKS UP A TEDDY BEAR',
-'ISH TELLS SOMEONE HE IS A SINGER','ISH TEAMS UP WITH A RANDOM','ISH SAYS "LIKE"',
-'ISH TALKS ABOUT BREAKING HIS WRIST','ISH SAYS "THANK YOU, THANK YOU"','CHAT GIFTS MERCH','ISH MENTIONS COSTCO'
-];
+let selectedGame="dayz";
 
-function openModal() {
-  document.getElementById("nameModal").style.display = "flex";
-  document.getElementById("playerNameInput").focus();
+function openModal(game){
+
+selectedGame=game;
+
+document.getElementById("nameModal").style.display="flex";
+
+document.getElementById("playerNameInput").focus();
+
 }
 
-function closeModal() {
-  document.getElementById("nameModal").style.display = "none";
+function closeModal(){
+
+document.getElementById("nameModal").style.display="none";
+
 }
 
-window.onclick = function(e) {
-  if (e.target === document.getElementById("nameModal")) {
-    closeModal();
-  }
+window.onclick=function(e){
+
+if(e.target===document.getElementById("nameModal")){
+
+closeModal();
+
 }
 
-document.getElementById("playerNameInput").addEventListener("keypress", function(e) {
-  if (e.key === "Enter") startBingo();
+}
+
+document.getElementById("playerNameInput").addEventListener("keypress",function(e){
+
+if(e.key==="Enter") startBingo();
+
 });
 
-function generateRandomCard() {
-  const shuffled = [...phrases].sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, 24);
-  selected.splice(12, 0, "FREE SPACE");
-  return selected;
+const dayzPhrases=[
+
+'MORNING F','ISH TALKS ABOUT RUN CLUB','ISH STRIPS','ISH MISSES A SHOT AGAINST A PLAYER', 'ISH MISSES A SHOT AGAINST AN ANIMAL','BABYZED PHOTO','ISH PROMOTES NEW YT VIDEO','"BURY"', 'ISH GOES RED HUNGRY','ISH GASLIGHTS HIMSELF ABOUT BINGO','ISH MENTIONS BOTTLE OPENING FEES', 'ISH TALKS ABOUT SKATEBOARDING','ISH DRINKS AT A WELL','ISH TALKS ABOUT COMCAST','DAD JOKE IS TOLD', 'ISH GETS A KILL','HYPE TRAIN','ISH PUTS UP TIME OUT SYMBOL WHILE AFK','ISH PICKS UP AN SKS', 'ISH DOES A DESK POP','ISH TALKS ABOUT GROWING OUT HIS HAIR','ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING', 'ISH TALKS ABOUT BREAKING HIS WRIST','ISH MENTIONS MARVEL','ISH PUNCHES SOMEONE TO DEATH','ISH ACCIDENTALLY KILLS HIMSELF', 'ISH SAYS SOMETHING IN SPANISH','ISH THROWS A GRENADE','ISH MENTIONS THAT HE LISTENED TO A PODCAST','ISH MENTIONS LETTERBOX',
+];
+
+const mscPhrases=[
+
+'ENGINE BLOWS',
+'ISH CRASHES THE CAR',
+'ISH RUNS OUT OF GAS',
+'ISH FLIPS THE TRACTOR',
+'POLICE CHASE',
+'ISH DIES OF THIRST',
+'CAR WON’T START',
+'ISH GETS LOST',
+'ISH YELLS AT THE CAR',
+'PART INSTALLED WRONG',
+'ISH CRASHES INTO TREE',
+'ISH BREAKS THE SATSUMA',
+'ENGINE OVERHEATS',
+'ISH DRIVES INTO WATER',
+'ISH FORGETS TOOL',
+'ISH RUNS OUT OF MONEY',
+'ISH GETS ARRESTED',
+'ISH ROLLS THE CAR',
+'ISH WALKS HOME',
+'ISH GETS STUCK',
+'ISH GETS FRUSTRATED',
+'ISH CRASHES AGAIN',
+'CAR STALLS',
+'ISH ABANDONS CAR'
+];
+
+function generateRandomCard(){
+
+let phrases=(selectedGame==="msc")?mscPhrases:dayzPhrases;
+
+const shuffled=[...phrases].sort(()=>Math.random()-0.5);
+
+const selected=shuffled.slice(0,24);
+
+selected.splice(12,0,"FREE SPACE");
+
+return selected;
+
 }
 
-function startBingo() {
-  let playerName = document.getElementById("playerNameInput").value.trim();
-  if (!playerName) playerName = "Anonymous";
-  closeModal();
-  generateCard(playerName);
+function startBingo(){
+
+let playerName=document.getElementById("playerNameInput").value.trim();
+
+if(!playerName) playerName="Anonymous";
+
+closeModal();
+
+generateCard(playerName);
+
 }
 
-function generateCard(playerName) {
+function generateCard(playerName){
 
-  const card = generateRandomCard();
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
+const card=generateRandomCard();
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(22);
-  doc.text("AmishZed Bingo", pageWidth / 2, 20, { align: "center" });
+const doc=new jsPDF();
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(14);
-  doc.text(playerName, pageWidth / 2, 30, { align: "center" });
+const pageWidth=doc.internal.pageSize.getWidth();
 
-  const startX = 20;
-  const startY = 50;
-  const cellSize = 35;
+doc.setFont("helvetica","bold");
 
-  doc.setFontSize(10);
-  doc.setLineWidth(0.2);
+doc.setFontSize(22);
 
-  for (let row = 0; row < 5; row++) {
-    for (let col = 0; col < 5; col++) {
+doc.text("AmishZed Bingo",pageWidth/2,20,{align:"center"});
 
-      const x = startX + col * cellSize;
-      const y = startY + row * cellSize;
-      const text = card[row * 5 + col];
+doc.setFont("helvetica","normal");
 
-      doc.rect(x, y, cellSize, cellSize);
+doc.setFontSize(14);
 
-      const splitText = doc.splitTextToSize(text, cellSize - 4);
-      const textY = y + cellSize / 2 - ((splitText.length - 1) * 2);
+doc.text(playerName,pageWidth/2,30,{align:"center"});
 
-      doc.text(splitText, x + cellSize / 2, textY + 4, { align: "center" });
-    }
-  }
+const startX=20;
 
-  const today = new Date();
-  doc.setFontSize(12);
-  doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth / 2, startY + 5 * cellSize + 15, { align: "center" });
+const startY=50;
 
-  const filename = `AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
-  doc.save(filename);
+const cellSize=35;
+
+doc.setFontSize(10);
+
+doc.setLineWidth(0.2);
+
+for(let row=0;row<5;row++){
+
+for(let col=0;col<5;col++){
+
+const x=startX+col*cellSize;
+
+const y=startY+row*cellSize;
+
+const text=card[row*5+col];
+
+doc.rect(x,y,cellSize,cellSize);
+
+const splitText=doc.splitTextToSize(text,cellSize-4);
+
+const textY=y+cellSize/2-((splitText.length-1)*2);
+
+doc.text(splitText,x+cellSize/2,textY+4,{align:"center"});
+
 }
+
+}
+
+const today=new Date();
+
+doc.setFontSize(12);
+
+doc.text(`Date: ${today.toLocaleDateString()}`,pageWidth/2,startY+5*cellSize+15,{align:"center"});
+
+const filename=`AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
+
+doc.save(filename);
+
+}
+
 </script>
 
 </body>
