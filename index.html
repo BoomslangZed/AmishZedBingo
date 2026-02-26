@@ -1,184 +1,7 @@
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-<title>AmishZed Bingo Generator</title>
-<link rel="icon" type="image/png" href="favicon.png"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-
-body{
-font-family:Arial,sans-serif;
-text-align:center;
-margin:0;
-padding-top:50px;
-background:#f4f4f4;
-min-height:100vh;
-display:flex;
-flex-direction:column;
-}
-
-h1{
-margin-bottom:30px;
-}
-
-.buttonContainer{
-text-align:center;
-margin-bottom:20px;
-}
-
-button{
-padding:15px 30px;
-font-size:18px;
-cursor:pointer;
-background-color:#4CAF50;
-color:white;
-border:none;
-border-radius:6px;
-transition:0.3s;
-width:auto;
-display:inline-block;
-margin:5px;
-}
-
-button:hover{
-background-color:#45a049;
-}
-
-#rules{
-max-width:450px;
-margin:30px auto;
-text-align:left;
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0px 5px 20px rgba(0,0,0,0.1);
-}
-
-footer{
-margin-top:auto;
-padding:40px 20px;
-font-size:14px;
-color:#555;
-max-width:700px;
-margin-left:auto;
-margin-right:auto;
-line-height:1.6;
-}
-
-/* Modal */
-
-#nameModal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
-justify-content:center;
-align-items:center;
-z-index:999;
-}
-
-#nameModal.show{
-display:flex;
-}
-
-.modal-content{
-background:white;
-padding:30px;
-border-radius:10px;
-width:300px;
-text-align:center;
-animation:fadeIn 0.25s ease;
-position:relative;
-}
-
-.modal-content input{
-width:100%;
-padding:10px;
-margin-top:15px;
-font-size:16px;
-box-sizing:border-box;
-}
-
-.close-btn{
-position:absolute;
-right:15px;
-top:10px;
-cursor:pointer;
-font-size:24px;
-line-height:1;
-user-select:none;
-}
-
-@keyframes fadeIn{
-from{transform:scale(0.9);opacity:0;}
-to{transform:scale(1);opacity:1;}
-}
-
-</style>
-</head>
-
-<body>
-
-<h1>🎉 AmishZed Bingo Generator 🎉</h1>
-
-<div class="buttonContainer">
-
-<button onclick="openModal('dayz')">
-🎮 Generate DayZ Bingo Card
-</button>
-
-<button onclick="openModal('msc')">
-🚗 Generate My Summer Car Bingo Card
-</button>
-
-</div>
-
-<div id="rules">
-
-<h2>📝 How to Play ISH Bingo</h2>
-
-<ol>
-<li>Choose the game bingo card.</li>
-<li>Enter your username.</li>
-<li>Download your Bingo card PDF.</li>
-<li>Mark squares while watching the stream.</li>
-<li>When you get Bingo share it in chat!</li>
-</ol>
-
-</div>
-
-<div id="nameModal">
-
-<div class="modal-content">
-
-<span class="close-btn" onclick="closeModal()">&times;</span>
-
-<h3>Enter Your Name</h3>
-
-<input type="text" id="playerNameInput" placeholder="Your name"/>
-
-<br><br>
-
-<button onclick="startBingo()">Generate Card</button>
-
-</div>
-
-</div>
-
-<footer>
-
-To AmishZed, thanks for the hours of entertainment and fun.  
-You are the light that shines during our mundane days in the office or at home.  
-We truly appreciate you and your less than stellar gameplay. ❤️ -Chat
-
-</footer>
-
 <script>
+
+document.addEventListener("DOMContentLoaded", function(){
 
 const { jsPDF } = window.jspdf;
 
@@ -200,10 +23,11 @@ document.getElementById("playerNameInput").focus();
 }
 
 function closeModal(){
-
 document.getElementById("nameModal").classList.remove("show");
-
 }
+
+window.openModal=openModal;
+window.closeModal=closeModal;
 
 /* Click outside modal closes */
 
@@ -220,15 +44,12 @@ closeModal();
 /* Enter key submits */
 
 document.getElementById("playerNameInput").addEventListener("keypress",function(e){
-
 if(e.key==="Enter") startBingo();
-
 });
 
 /* Phrases */
 
 const dayzPhrases=[
-
 'MORNING F','ISH TALKS ABOUT RUN CLUB','ISH STRIPS','ISH MISSES A SHOT AGAINST A PLAYER','ISH MISSES A SHOT AGAINST AN ANIMAL',
 'BABYZED PHOTO','ISH PROMOTES NEW YT VIDEO','"BURY"','ISH GOES RED HUNGRY','ISH GASLIGHTS HIMSELF ABOUT BINGO',
 'ISH MENTIONS BOTTLE OPENING FEES','ISH TALKS ABOUT SKATEBOARDING','ISH DRINKS AT A WELL','ISH TALKS ABOUT COMCAST',
@@ -236,11 +57,9 @@ const dayzPhrases=[
 'ISH DOES A DESK POP','ISH TALKS ABOUT GROWING OUT HIS HAIR','ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING',
 'ISH TALKS ABOUT BREAKING HIS WRIST','ISH MENTIONS MARVEL','ISH PUNCHES SOMEONE TO DEATH','ISH ACCIDENTALLY KILLS HIMSELF',
 'ISH SAYS SOMETHING IN SPANISH','ISH THROWS A GRENADE','ISH MENTIONS THAT HE LISTENED TO A PODCAST','ISH MENTIONS LETTERBOX'
-
 ];
 
 const mscPhrases=[
-
 'ISH DRIVES THE CAR','ISH DRIVES THE BOAT','ISH LOOKS AT THE DIAGRAM TO BUILD THE CAR','ISH SAYS HE CHANGED HIS OIL ONCE WITH HIS DAD',
 'ISH DRIVES THE TRACTOR','ISH MENTIONS BURNING HIS HOUSE DOWN','ISH DRIVES HIS UNCLES VAN','ISH CRASHES THE CAR',
 '"HOW DO I _____?"','ISH FLIPS SOMEONE OFF','ISH FLIPS THE TRACTOR','ISH DIES','ISH URINATES','ISH DRINKS WHILE DRIVING',
@@ -250,22 +69,16 @@ const mscPhrases=[
 'ISH WALKS HOME','ISH GETS FRUSTRATED','ISH RUNS OUT OF CIGS','CAR STALLS','ISH TALKS ABOUT RUN CLUB',
 'BABYZED PHOTO','"BURY"','ISH TALKS ABOUT SKATEBOARDING','ISH SAYS SOMETHING IN SPANISH',
 'ISH ASKS CHAT WHAT TOOL HE IS SUPPOSED TO USE','ISH BUYS A CAR PART'
-
 ];
 
 /* Fisher-Yates Shuffle */
 
 function shuffle(array){
-
 for(let i=array.length-1;i>0;i--){
-
 const j=Math.floor(Math.random()*(i+1));
 [array[i],array[j]]=[array[j],array[i]];
-
 }
-
 return array;
-
 }
 
 function generateRandomCard(){
@@ -282,7 +95,7 @@ return selected;
 
 }
 
-function startBingo(){
+window.startBingo=function(){
 
 let playerName=document.getElementById("playerNameInput").value.trim();
 
@@ -352,8 +165,7 @@ doc.save(filename);
 
 }
 
-</script>
+});
 
-</body>
-</html>
+</script>
 ```
