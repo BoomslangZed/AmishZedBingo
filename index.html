@@ -165,8 +165,6 @@ We truly appreciate you and your less than stellar gameplay. ❤️ - Chat
 
 <script>
 
-const { jsPDF } = window.jspdf;
-
 let selectedGame="dayz";
 
 function openModal(game){
@@ -201,9 +199,9 @@ const mscPhrases=[
 '"HOW DO I _____?"','ISH FLIPS SOMEONE OFF','ISH SUCKS UP POO POO','ISH URINATES','ISH DRINKS WHILE DRIVING',
 'ISH MENTIONS HOW HE ACTUALLY HATES THIS GAME','CAR WON’T START','ISH TAKES A SHOWER','ISH LOSES AN ITEM',
 'ISH YELLS AT THE CAR','ISH GETS A CALL FROM GRANDMAMA','ISH BUYS BEER','ISH COOKS FOOD','ISH DRINKS COFFEE',
-'ENGINE OVERHEATS','ISH SEES TEMU','ISH SAYS HE IS NOT A CAR GUY', 'ISH ACCIDENTALLY KILLS SOMEONE', '"POO POO TRUCK"',
+'ENGINE OVERHEATS','ISH SEES TEMU','ISH SAYS HE IS NOT A CAR GUY','ISH ACCIDENTALLY KILLS SOMEONE','"POO POO TRUCK"',
 'ISH WALKS HOME','ISH GETS FRUSTRATED','ISH RUNS OUT OF CIGS',
-'ISH ASKS CHAT WHAT TOOL HE IS SUPPOSED TO USE','ISH BUYS A CAR PART', 'ISH BLOWS A FUSE',
+'ISH ASKS CHAT WHAT TOOL HE IS SUPPOSED TO USE','ISH BUYS A CAR PART','ISH BLOWS A FUSE'
 ];
 
 function shuffle(array){
@@ -244,7 +242,7 @@ function generateCard(playerName){
 
 const card=generateRandomCard();
 
-const doc=new jsPDF();
+const doc=new window.jspdf.jsPDF();
 
 const pageWidth=doc.internal.pageSize.getWidth();
 
@@ -294,4 +292,3 @@ doc.save("AmishZed_Bingo.pdf");
 
 </body>
 </html>
-```
