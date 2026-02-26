@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,14 +67,23 @@ margin-right:auto;
 line-height:1.6;
 }
 
+/* Modal */
+
 #nameModal{
 display:none;
 position:fixed;
-inset:0;
+top:0;
+left:0;
+width:100%;
+height:100%;
 background:rgba(0,0,0,0.6);
 justify-content:center;
 align-items:center;
 z-index:999;
+}
+
+#nameModal.show{
+display:flex;
 }
 
 .modal-content{
@@ -82,7 +92,7 @@ padding:30px;
 border-radius:10px;
 width:300px;
 text-align:center;
-animation:fadeIn 0.3s ease;
+animation:fadeIn 0.25s ease;
 position:relative;
 }
 
@@ -174,31 +184,40 @@ const { jsPDF } = window.jspdf;
 
 let selectedGame="dayz";
 
+/* Modal controls */
+
 function openModal(game){
 
 selectedGame=game;
 
-document.getElementById("nameModal").style.display="flex";
+const modal=document.getElementById("nameModal");
+modal.classList.add("show");
 
+setTimeout(()=>{
 document.getElementById("playerNameInput").focus();
+},50);
 
 }
 
 function closeModal(){
 
-document.getElementById("nameModal").style.display="none";
+document.getElementById("nameModal").classList.remove("show");
 
 }
+
+/* Click outside modal closes */
 
 window.onclick=function(e){
 
-if(e.target===document.getElementById("nameModal")){
+const modal=document.getElementById("nameModal");
 
+if(e.target===modal){
 closeModal();
-
 }
 
 }
+
+/* Enter key submits */
 
 document.getElementById("playerNameInput").addEventListener("keypress",function(e){
 
@@ -206,44 +225,54 @@ if(e.key==="Enter") startBingo();
 
 });
 
+/* Phrases */
+
 const dayzPhrases=[
 
-'MORNING F','ISH TALKS ABOUT RUN CLUB','ISH STRIPS','ISH MISSES A SHOT AGAINST A PLAYER', 'ISH MISSES A SHOT AGAINST AN ANIMAL',
-  'BABYZED PHOTO','ISH PROMOTES NEW YT VIDEO','"BURY"', 'ISH GOES RED HUNGRY','ISH GASLIGHTS HIMSELF ABOUT BINGO','ISH MENTIONS BOTTLE OPENING FEES',
-  'ISH TALKS ABOUT SKATEBOARDING','ISH DRINKS AT A WELL','ISH TALKS ABOUT COMCAST','DAD JOKE IS TOLD', 'ISH GETS A KILL','HYPE TRAIN',
-  'ISH PUTS UP TIME OUT SYMBOL WHILE AFK','ISH PICKS UP AN SKS', 'ISH DOES A DESK POP','ISH TALKS ABOUT GROWING OUT HIS HAIR',
-  'ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING', 'ISH TALKS ABOUT BREAKING HIS WRIST','ISH MENTIONS MARVEL',
-  'ISH PUNCHES SOMEONE TO DEATH','ISH ACCIDENTALLY KILLS HIMSELF', 'ISH SAYS SOMETHING IN SPANISH','ISH THROWS A GRENADE',
-  'ISH MENTIONS THAT HE LISTENED TO A PODCAST','ISH MENTIONS LETTERBOX',
+'MORNING F','ISH TALKS ABOUT RUN CLUB','ISH STRIPS','ISH MISSES A SHOT AGAINST A PLAYER','ISH MISSES A SHOT AGAINST AN ANIMAL',
+'BABYZED PHOTO','ISH PROMOTES NEW YT VIDEO','"BURY"','ISH GOES RED HUNGRY','ISH GASLIGHTS HIMSELF ABOUT BINGO',
+'ISH MENTIONS BOTTLE OPENING FEES','ISH TALKS ABOUT SKATEBOARDING','ISH DRINKS AT A WELL','ISH TALKS ABOUT COMCAST',
+'DAD JOKE IS TOLD','ISH GETS A KILL','HYPE TRAIN','ISH PUTS UP TIME OUT SYMBOL WHILE AFK','ISH PICKS UP AN SKS',
+'ISH DOES A DESK POP','ISH TALKS ABOUT GROWING OUT HIS HAIR','ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING',
+'ISH TALKS ABOUT BREAKING HIS WRIST','ISH MENTIONS MARVEL','ISH PUNCHES SOMEONE TO DEATH','ISH ACCIDENTALLY KILLS HIMSELF',
+'ISH SAYS SOMETHING IN SPANISH','ISH THROWS A GRENADE','ISH MENTIONS THAT HE LISTENED TO A PODCAST','ISH MENTIONS LETTERBOX'
+
 ];
 
 const mscPhrases=[
 
-'ISH DRIVES THE CAR', 'ISH DRIVES THE BOAT', 'ISH LOOKS AT THE DIAGRAM TO BUILD THE CAR', 'ISH SAYS HE CHANGED HIS OIL ONCE WITH HIS DAD', 'ISH DRIVES THE TRACTOR', 'ISH MENTIONS BURNING HIS HOUSE DOWN', 'ISH DRIVES HIS UNCLES VAN',
-'ISH CRASHES THE CAR', '"HOW DO I _____?",
-'ISH FLIPS SOMEONE OFF',
-'ISH FLIPS THE TRACTOR',
-'ISH DIES', 'ISH URINATES', 'ISH DRINKS WHILE DRIVING', 'ISH MENTIONS HOW HE ACTUALLY HATES THIS GAME',
-'CAR WON’T START', 'ISH TAKES A SHOWER', 'ISH LOSES AN ITEM',
-'ISH YELLS AT THE CAR',
-'ISH GETS A CALL FROM GRANDMAMA',
-'ISH BUYS BEER', 'ISH COOKS FOOD', 'ISH DRINKS COFFEE',
-'ENGINE OVERHEATS', 'ISH SEES TEMU', 
-'ISH SAYS HE IS NOT A CAR GUY',
-'ISH GETS SCARED BY A SCARE DONO',
-'ISH WALKS HOME',
-'ISH GETS FRUSTRATED',
-'ISH RUNS OUT OF CIGS',
-'CAR STALLS',
-'ISH TALKS ABOUT RUN CLUB','BABYZED PHOTO','"BURY"',
-'ISH TALKS ABOUT SKATEBOARDING', 'ISH SAYS SOMETHING IN SPANISH', 'ISH ASKS CHAT WHAT TOOL HE IS SUPPOSED TO USE', 'ISH BUYS A CAR PART'
+'ISH DRIVES THE CAR','ISH DRIVES THE BOAT','ISH LOOKS AT THE DIAGRAM TO BUILD THE CAR','ISH SAYS HE CHANGED HIS OIL ONCE WITH HIS DAD',
+'ISH DRIVES THE TRACTOR','ISH MENTIONS BURNING HIS HOUSE DOWN','ISH DRIVES HIS UNCLES VAN','ISH CRASHES THE CAR',
+'"HOW DO I _____?"','ISH FLIPS SOMEONE OFF','ISH FLIPS THE TRACTOR','ISH DIES','ISH URINATES','ISH DRINKS WHILE DRIVING',
+'ISH MENTIONS HOW HE ACTUALLY HATES THIS GAME','CAR WON’T START','ISH TAKES A SHOWER','ISH LOSES AN ITEM',
+'ISH YELLS AT THE CAR','ISH GETS A CALL FROM GRANDMAMA','ISH BUYS BEER','ISH COOKS FOOD','ISH DRINKS COFFEE',
+'ENGINE OVERHEATS','ISH SEES TEMU','ISH SAYS HE IS NOT A CAR GUY','ISH GETS SCARED BY A SCARE DONO',
+'ISH WALKS HOME','ISH GETS FRUSTRATED','ISH RUNS OUT OF CIGS','CAR STALLS','ISH TALKS ABOUT RUN CLUB',
+'BABYZED PHOTO','"BURY"','ISH TALKS ABOUT SKATEBOARDING','ISH SAYS SOMETHING IN SPANISH',
+'ISH ASKS CHAT WHAT TOOL HE IS SUPPOSED TO USE','ISH BUYS A CAR PART'
+
 ];
+
+/* Fisher-Yates Shuffle */
+
+function shuffle(array){
+
+for(let i=array.length-1;i>0;i--){
+
+const j=Math.floor(Math.random()*(i+1));
+[array[i],array[j]]=[array[j],array[i]];
+
+}
+
+return array;
+
+}
 
 function generateRandomCard(){
 
 let phrases=(selectedGame==="msc")?mscPhrases:dayzPhrases;
 
-const shuffled=[...phrases].sort(()=>Math.random()-0.5);
+const shuffled=shuffle([...phrases]);
 
 const selected=shuffled.slice(0,24);
 
@@ -265,6 +294,8 @@ generateCard(playerName);
 
 }
 
+/* Generate PDF */
+
 function generateCard(playerName){
 
 const card=generateRandomCard();
@@ -274,25 +305,18 @@ const doc=new jsPDF();
 const pageWidth=doc.internal.pageSize.getWidth();
 
 doc.setFont("helvetica","bold");
-
 doc.setFontSize(22);
-
 doc.text("AmishZed Bingo",pageWidth/2,20,{align:"center"});
 
 doc.setFont("helvetica","normal");
-
 doc.setFontSize(14);
-
 doc.text(playerName,pageWidth/2,30,{align:"center"});
 
 const startX=20;
-
 const startY=50;
-
 const cellSize=35;
 
 doc.setFontSize(10);
-
 doc.setLineWidth(0.2);
 
 for(let row=0;row<5;row++){
@@ -300,18 +324,18 @@ for(let row=0;row<5;row++){
 for(let col=0;col<5;col++){
 
 const x=startX+col*cellSize;
-
 const y=startY+row*cellSize;
 
 const text=card[row*5+col];
 
 doc.rect(x,y,cellSize,cellSize);
 
-const splitText=doc.splitTextToSize(text,cellSize-4);
+const splitText=doc.splitTextToSize(text,cellSize-6);
 
-const textY=y+cellSize/2-((splitText.length-1)*2);
+const textHeight=splitText.length*4;
+const textY=y+(cellSize/2)-(textHeight/2)+4;
 
-doc.text(splitText,x+cellSize/2,textY+4,{align:"center"});
+doc.text(splitText,x+cellSize/2,textY,{align:"center"});
 
 }
 
@@ -320,7 +344,6 @@ doc.text(splitText,x+cellSize/2,textY+4,{align:"center"});
 const today=new Date();
 
 doc.setFontSize(12);
-
 doc.text(`Date: ${today.toLocaleDateString()}`,pageWidth/2,startY+5*cellSize+15,{align:"center"});
 
 const filename=`AmishZed Bingo ${today.toISOString().split('T')[0]}.pdf`;
@@ -333,3 +356,4 @@ doc.save(filename);
 
 </body>
 </html>
+```
