@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>AmishZed Bingo Generator</title>
 
 <link rel="icon" type="image/png" href="favicon.png"/>
@@ -12,95 +15,95 @@
 <style>
 
 body{
-font-family:Arial,sans-serif;
-text-align:center;
-margin:0;
-padding-top:50px;
-background:#f4f4f4;
-min-height:100vh;
-display:flex;
-flex-direction:column;
+    font-family:Arial,sans-serif;
+    text-align:center;
+    margin:0;
+    padding-top:50px;
+    background:#f4f4f4;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
 }
 
 h1{
-margin-bottom:30px;
+    margin-bottom:30px;
 }
 
 .buttonContainer{
-text-align:center;
-margin-bottom:20px;
+    text-align:center;
+    margin-bottom:20px;
 }
 
 button{
-padding:15px 30px;
-font-size:18px;
-cursor:pointer;
-background-color:#4CAF50;
-color:white;
-border:none;
-border-radius:6px;
-transition:0.3s;
-margin:5px;
+    padding:15px 30px;
+    font-size:18px;
+    cursor:pointer;
+    background-color:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:6px;
+    transition:0.3s;
+    margin:5px;
 }
 
 button:hover{
-background-color:#45a049;
+    background-color:#45a049;
 }
 
 #rules{
-max-width:450px;
-margin:30px auto;
-text-align:left;
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0px 5px 20px rgba(0,0,0,0.1);
+    max-width:450px;
+    margin:30px auto;
+    text-align:left;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0px 5px 20px rgba(0,0,0,0.1);
 }
 
 footer{
-margin-top:auto;
-padding:40px 20px;
-font-size:14px;
-color:#555;
-max-width:700px;
-margin-left:auto;
-margin-right:auto;
-line-height:1.6;
+    margin-top:auto;
+    padding:40px 20px;
+    font-size:14px;
+    color:#555;
+    max-width:700px;
+    margin-left:auto;
+    margin-right:auto;
+    line-height:1.6;
 }
 
 #nameModal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.6);
-justify-content:center;
-align-items:center;
-z-index:999;
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    z-index:999;
 }
 
 .modal-content{
-background:white;
-padding:30px;
-border-radius:10px;
-width:300px;
-text-align:center;
-position:relative;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    width:300px;
+    text-align:center;
+    position:relative;
 }
 
 .modal-content input{
-width:100%;
-padding:10px;
-margin-top:15px;
-font-size:16px;
-box-sizing:border-box;
+    width:100%;
+    padding:10px;
+    margin-top:15px;
+    font-size:16px;
+    box-sizing:border-box;
 }
 
 .close-btn{
-position:absolute;
-right:15px;
-top:10px;
-cursor:pointer;
-font-size:24px;
+    position:absolute;
+    right:15px;
+    top:10px;
+    cursor:pointer;
+    font-size:24px;
 }
 
 </style>
@@ -113,13 +116,13 @@ font-size:24px;
 
 <div class="buttonContainer">
 
-<button onclick="openModal('dayz')">
-🎮 Generate DayZ Bingo Card
-</button>
+    <button onclick="openModal('dayz')">
+        🎮 Generate DayZ Bingo Card
+    </button>
 
-<button onclick="openModal('isle')">
-🦖 Generate The Isle Bingo Card
-</button>
+    <button onclick="openModal('isle')">
+        🦖 Generate The Isle Bingo Card
+    </button>
 
 </div>
 
@@ -128,30 +131,30 @@ font-size:24px;
 <h2>📝 How to Play ISH Bingo</h2>
 
 <ol>
-<li>🎯 Choose the game bingo card.</li>
-<li>👤 Enter your username.</li>
-<li>📄 Download your Bingo card PDF.</li>
-<li>✔️ Mark squares while watching the stream.</li>
-<li>🏆 When you get Bingo share it in chat!</li>
+    <li>🎯 Choose a game bingo card.</li>
+    <li>👤 Enter your username.</li>
+    <li>📄 Download your Bingo card PDF.</li>
+    <li>✔️ Mark squares while watching the stream.</li>
+    <li>🏆 When you get Bingo share it in chat!</li>
 </ol>
 
 </div>
 
 <div id="nameModal">
 
-<div class="modal-content">
+    <div class="modal-content">
 
-<span class="close-btn" onclick="closeModal()">&times;</span>
+        <span class="close-btn" onclick="closeModal()">&times;</span>
 
-<h3>👤 Enter Your Name</h3>
+        <h3>👤 Enter Your Name</h3>
 
-<input type="text" id="playerNameInput" placeholder="Your name"/>
+        <input type="text" id="playerNameInput" placeholder="Your name"/>
 
-<br><br>
+        <br><br>
 
-<button onclick="startBingo()">📄 Generate Card</button>
+        <button onclick="startBingo()">📄 Generate Card</button>
 
-</div>
+    </div>
 
 </div>
 
@@ -165,174 +168,203 @@ We truly appreciate you and your less than stellar gameplay. ❤️ - Chat
 
 <script>
 
-let selectedGame="dayz";
+let selectedGame = "dayz";
 
 function openModal(game){
-selectedGame=game;
-document.getElementById("nameModal").style.display="flex";
-document.getElementById("playerNameInput").focus();
+    selectedGame = game;
+    document.getElementById("nameModal").style.display = "flex";
+    document.getElementById("playerNameInput").focus();
 }
 
 function closeModal(){
-document.getElementById("nameModal").style.display="none";
+    document.getElementById("nameModal").style.display = "none";
 }
 
-window.onclick=function(e){
-if(e.target===document.getElementById("nameModal")){
-closeModal();
-}
-}
+window.onclick = function(e){
+    if(e.target === document.getElementById("nameModal")){
+        closeModal();
+    }
+};
 
-const dayzPhrases=[
-'MORNING F',
-'ISH TALKS ABOUT RUN CLUB',
-'ISH STRIPS',
-'ISH MISSES A SHOT AGAINST A PLAYER',
-'ISH MISSES A SHOT AGAINST AN ANIMAL',
-'BABYZED PHOTO',
-'ISH PROMOTES NEW YT VIDEO',
-'"BURY"',
-'ISH GOES RED HUNGRY',
-'ISH GASLIGHTS HIMSELF ABOUT BINGO',
-'ISH MENTIONS BOTTLE OPENING FEES',
-'ISH TALKS ABOUT SKATEBOARDING',
-'ISH DRINKS AT A WELL',
-'ISH TALKS ABOUT COMCAST',
-'DAD JOKE IS TOLD',
-'ISH GETS A KILL',
-'HYPE TRAIN',
-'ISH PUTS UP TIME OUT SYMBOL WHILE AFK',
-'ISH PICKS UP AN SKS',
-'ISH DOES A DESK POP',
-'ISH TALKS ABOUT GROWING OUT HIS HAIR',
-'ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING',
-'ISH TALKS ABOUT BREAKING HIS WRIST',
-'ISH MENTIONS MARVEL',
-'ISH PUNCHES SOMEONE TO DEATH',
-'ISH ACCIDENTALLY KILLS HIMSELF',
-'ISH SAYS SOMETHING IN SPANISH',
-'ISH THROWS A GRENADE',
-'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
-'ISH MENTIONS LETTERBOX',
-'ISH MENTIONS ARM SHOTS',
-'ISH MENTIONS HIS NARROW SHOULDERS',
+const dayzPhrases = [
+
+    'MORNING F',
+    'ISH TALKS ABOUT RUN CLUB',
+    'ISH STRIPS',
+    'ISH MISSES A SHOT AGAINST A PLAYER',
+    'ISH MISSES A SHOT AGAINST AN ANIMAL',
+    'BABYZED PHOTO',
+    'ISH PROMOTES NEW YT VIDEO',
+    '"BURY"',
+    'ISH GOES RED HUNGRY',
+    'ISH GASLIGHTS HIMSELF ABOUT BINGO',
+    'ISH MENTIONS BOTTLE OPENING FEES',
+    'ISH TALKS ABOUT SKATEBOARDING',
+    'ISH DRINKS AT A WELL',
+    'ISH TALKS ABOUT COMCAST',
+    'DAD JOKE IS TOLD',
+    'ISH GETS A KILL',
+    'HYPE TRAIN',
+    'ISH PUTS UP TIME OUT SYMBOL WHILE AFK',
+    'ISH PICKS UP AN SKS',
+    'ISH DOES A DESK POP',
+    'ISH TALKS ABOUT GROWING OUT HIS HAIR',
+    'ISH TALKS ABOUT BEING BANNED FOR COMBAT LOGGING',
+    'ISH TALKS ABOUT BREAKING HIS WRIST',
+    'ISH MENTIONS MARVEL',
+    'ISH PUNCHES SOMEONE TO DEATH',
+    'ISH ACCIDENTALLY KILLS HIMSELF',
+    'ISH SAYS SOMETHING IN SPANISH',
+    'ISH THROWS A GRENADE',
+    'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
+    'ISH MENTIONS LETTERBOX',
+    'ISH MENTIONS ARM SHOTS',
+    'ISH MENTIONS HIS NARROW SHOULDERS'
+
 ];
 
-const islePhrases=[
-'ISH ADOPTS A BABY',
-'ISH KILLS A BOAR',
-'ISH KILLS A DEER',
-'ISH GETS KILLED BY AN AI ANIMAL',
-'ISH JOINS A PACK',
-'ISH DIES',
-'ISH EATS ROTTEN FLESH',
-'ISH TAKES FALL DAMAGE',
-'ISH GETS LAID',
-'ISH FIGHTS ANOTHER PLAYER',
-'ISH SEES A TRICERATOPS',
-'ISH RUNS AWAY FROM A FIGHT',
-'ISH HITS PRIME',
-'ISH SWIMS',
-'ISH HIDES IN A BUSH',
-'ISH KILLS A DINO OF THE SAME SPECIES AS HIM',
-'ISH DRINKS SALT WATER',
-'ISH GETS DENIED DINO SEX',
-'ISH GETS AMBUSHED',
-'ISH SAYS SOMETHING WEIRD WHILE RPing',
-'ISH ACCIDENTIALLY HITS A TEAMMATE',
-'MORNING F',
-'"BURY"',
-'ISH GOES RED HUNGRY',
-'ISH TALKS ABOUT RUN CLUB',
-'DAD JOKE IS TOLD',
-'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
-'ISH GOES TO SANCTUARY',
-'REDLINE GETS MENTIONED',
-'ISH TALKS ABOUT MARVEL',
+const islePhrases = [
+
+    'ISH ADOPTS A BABY',
+    'ISH KILLS A BOAR',
+    'ISH KILLS A DEER',
+    'ISH GETS KILLED BY AN AI ANIMAL',
+    'ISH JOINS A PACK',
+    'ISH DIES',
+    'ISH EATS ROTTEN FLESH',
+    'ISH TAKES FALL DAMAGE',
+    'ISH GETS LAID',
+    'ISH FIGHTS ANOTHER PLAYER',
+    'ISH SEES A TRICERATOPS',
+    'ISH RUNS AWAY FROM A FIGHT',
+    'ISH HITS PRIME',
+    'ISH SWIMS',
+    'ISH HIDES IN A BUSH',
+    'ISH KILLS A DINO OF THE SAME SPECIES AS HIM',
+    'ISH DRINKS SALT WATER',
+    'ISH GETS DENIED DINO SEX',
+    'ISH GETS AMBUSHED',
+    'ISH SAYS SOMETHING WEIRD WHILE RPing',
+    'ISH ACCIDENTIALLY HITS A TEAMMATE',
+    'MORNING F',
+    '"BURY"',
+    'ISH GOES RED HUNGRY',
+    'ISH TALKS ABOUT RUN CLUB',
+    'DAD JOKE IS TOLD',
+    'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
+    'ISH GOES TO SANCTUARY',
+    'REDLINE GETS MENTIONED',
+    'ISH TALKS ABOUT MARVEL'
+
 ];
 
 function shuffle(array){
-for(let i=array.length-1;i>0;i--){
-const j=Math.floor(Math.random()*(i+1));
-[array[i],array[j]]=[array[j],array[i]];
-}
-return array;
+
+    for(let i = array.length - 1; i > 0; i--){
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+
+    return array;
 }
 
 function generateRandomCard(){
 
-let phrases=(selectedGame==="isle") ? islePhrases : dayzPhrases;
+    let phrases = (selectedGame === "isle") ? islePhrases : dayzPhrases;
 
-const shuffled=shuffle([...phrases]);
+    const shuffled = shuffle([...phrases]);
 
-const selected=shuffled.slice(0,24);
+    const selected = shuffled.slice(0, 24);
 
-selected.splice(12,0,"FREE SPACE");
+    selected.splice(12, 0, "FREE SPACE");
 
-return selected;
-
+    return selected;
 }
 
 function startBingo(){
 
-let playerName=document.getElementById("playerNameInput").value.trim();
+    let playerName = document.getElementById("playerNameInput").value.trim();
 
-if(!playerName) playerName="Anonymous";
+    if(!playerName){
+        playerName = "Anonymous";
+    }
 
-closeModal();
+    closeModal();
 
-generateCard(playerName);
-
+    generateCard(playerName);
 }
 
 function generateCard(playerName){
 
-const card=generateRandomCard();
+    const card = generateRandomCard();
 
-const doc=new window.jspdf.jsPDF();
+    const { jsPDF } = window.jspdf;
 
-const pageWidth=doc.internal.pageSize.getWidth();
+    const doc = new jsPDF();
 
-doc.setFont("helvetica","bold");
-doc.setFontSize(22);
-doc.text("AmishZed Bingo",pageWidth/2,20,{align:"center"});
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-doc.setFont("helvetica","normal");
-doc.setFontSize(14);
-doc.text(playerName,pageWidth/2,30,{align:"center"});
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
 
-const startX=20;
-const startY=50;
-const cellSize=35;
+    doc.text("AmishZed Bingo", pageWidth / 2, 20, {
+        align: "center"
+    });
 
-doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(14);
 
-for(let row=0;row<5;row++){
+    doc.text(playerName, pageWidth / 2, 30, {
+        align: "center"
+    });
 
-for(let col=0;col<5;col++){
+    const startX = 20;
+    const startY = 50;
+    const cellSize = 35;
 
-const x=startX+col*cellSize;
-const y=startY+row*cellSize;
+    doc.setFontSize(10);
 
-const text=card[row*5+col];
+    for(let row = 0; row < 5; row++){
 
-doc.rect(x,y,cellSize,cellSize);
+        for(let col = 0; col < 5; col++){
 
-const splitText=doc.splitTextToSize(text,cellSize-4);
+            const x = startX + col * cellSize;
+            const y = startY + row * cellSize;
 
-doc.text(splitText,x+cellSize/2,y+cellSize/2,{align:"center"});
+            const text = card[row * 5 + col];
 
-}
+            doc.rect(x, y, cellSize, cellSize);
 
-}
+            const splitText = doc.splitTextToSize(text, cellSize - 4);
 
-const today=new Date();
+            doc.text(
+                splitText,
+                x + cellSize / 2,
+                y + cellSize / 2,
+                {
+                    align: "center",
+                    baseline: "middle"
+                }
+            );
+        }
+    }
 
-doc.setFontSize(12);
-doc.text(`Date: ${today.toLocaleDateString()}`,pageWidth/2,startY+5*cellSize+15,{align:"center"});
+    const today = new Date();
 
-doc.save("AmishZed_Bingo.pdf");
+    doc.setFontSize(12);
 
+    doc.text(
+        `Date: ${today.toLocaleDateString()}`,
+        pageWidth / 2,
+        startY + 5 * cellSize + 15,
+        {
+            align: "center"
+        }
+    );
+
+    doc.save("AmishZed_Bingo.pdf");
 }
 
 </script>
