@@ -2,649 +2,862 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AmishZed DayZ Bingo Generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AmishZed DayZ Bingo</title>
+<link rel="icon" type="image/png" href="favicon.png">
 
-    <link rel="icon" type="image/png" href="favicon.png">
+<style>
+* {
+    box-sizing: border-box;
+}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+body {
+    margin: 0;
+    padding: 25px 15px;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f4f4f4;
+    color: #222;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+h1 {
+    font-size: clamp(26px, 5vw, 40px);
+    margin: 15px 0;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 40px 15px 0;
-            background: #f4f4f4;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: #222;
-        }
+.subtitle {
+    color: #666;
+    margin-bottom: 25px;
+}
 
-        h1 {
-            margin-bottom: 30px;
-            font-size: clamp(26px, 5vw, 38px);
-        }
+button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 13px 24px;
+    margin: 5px;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        .buttonContainer {
-            margin-bottom: 20px;
-        }
+button:hover {
+    background: #388e3c;
+}
 
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            transition: background-color 0.2s;
-            margin: 5px;
-        }
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
 
-        button:hover {
-            background-color: #45a049;
-        }
+.secondary {
+    background: #555;
+}
 
-        button:focus-visible,
-        input:focus-visible {
-            outline: 3px solid #2563eb;
-            outline-offset: 3px;
-        }
+.secondary:hover {
+    background: #333;
+}
 
-        #rules {
-            width: 100%;
-            max-width: 450px;
-            margin: 30px auto;
-            text-align: left;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
+#gameArea {
+    display: none;
+    max-width: 850px;
+    margin: 20px auto;
+}
 
-        #rules h2 {
-            margin-top: 0;
-        }
+.playerInfo {
+    margin: 15px 0;
+    font-size: 18px;
+}
 
-        #rules li {
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
+.bingoBoard {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 5px;
+    width: 100%;
+    margin: 15px auto;
+}
 
-        footer {
-            margin-top: auto;
-            padding: 40px 20px;
-            font-size: 14px;
-            color: #555;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
+.bingoLetter {
+    font-size: clamp(24px, 5vw, 45px);
+    font-weight: 900;
+    color: #4CAF50;
+    padding: 5px;
+}
 
-        #nameModal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            padding: 20px;
-        }
+.bingoCell {
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    aspect-ratio: 1 / 1;
+    padding: 6px;
+    margin: 0;
+    color: #222;
+    font-size: clamp(8px, 1.5vw, 13px);
+    font-weight: bold;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: background 0.2s, transform 0.15s;
+}
 
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-            position: relative;
-        }
+.bingoCell:hover {
+    background: #e8f5e9;
+    transform: scale(1.02);
+}
 
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            margin-top: 15px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+.bingoCell.marked {
+    background: #a5d6a7;
+    border-color: #388e3c;
+    text-decoration: line-through;
+}
 
-        .close-btn {
-            position: absolute;
-            right: 10px;
-            top: 5px;
-            cursor: pointer;
-            font-size: 28px;
-            background: transparent;
-            color: #555;
-            border: none;
-            padding: 5px 10px;
-            margin: 0;
-        }
+.bingoCell.marked::after {
+    content: "✔";
+    position: absolute;
+    right: 5px;
+    top: 3px;
+    color: #1b5e20;
+    font-size: 18px;
+    text-decoration: none;
+}
 
-        .close-btn:hover {
-            background: transparent;
-            color: #111;
-        }
+.bingoCell.free {
+    background: #c8e6c9;
+    border-color: #388e3c;
+    color: #1b5e20;
+    text-decoration: none;
+}
 
-        #generateBtn {
-            width: 100%;
-            margin: 20px 0 0;
-        }
+.bingoCell.free::after {
+    content: "★";
+}
 
-        #errorMessage {
-            color: #b91c1c;
-            font-size: 14px;
-            margin-top: 12px;
-            min-height: 18px;
-        }
+.bingoCell.winning {
+    background: #ffd54f;
+    border-color: #f57f17;
+    box-shadow: 0 0 15px rgba(255,193,7,0.8);
+    animation: winnerPulse 1s infinite alternate;
+}
 
-        @media (max-width: 480px) {
-            body {
-                padding-top: 30px;
-            }
+@keyframes winnerPulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.04); }
+}
 
-            .buttonContainer button {
-                width: 100%;
-                max-width: 350px;
-                font-size: 16px;
-            }
+#bingoMessage {
+    display: none;
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 550px;
+    border-radius: 12px;
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+}
 
-            #rules {
-                padding: 18px;
-            }
+#bingoMessage h2 {
+    font-size: 34px;
+    margin: 5px;
+}
 
-            footer {
-                padding: 30px 10px;
-            }
-        }
-    </style>
+#rules {
+    max-width: 500px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    text-align: left;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+#rules li {
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+footer {
+    max-width: 700px;
+    margin: 50px auto 10px;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.7;
+}
+
+#nameModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modalContent {
+    width: 100%;
+    max-width: 360px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    position: relative;
+}
+
+.modalContent input {
+    width: 100%;
+    padding: 13px;
+    font-size: 16px;
+    margin: 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.closeBtn {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    font-size: 26px;
+    cursor: pointer;
+    background: transparent;
+    color: #555;
+    padding: 4px 10px;
+}
+
+.closeBtn:hover {
+    background: transparent;
+    color: black;
+}
+
+.emoji {
+    position: fixed;
+    top: -50px;
+    pointer-events: none;
+    z-index: 2000;
+    animation: emojiFall linear forwards;
+}
+
+@keyframes emojiFall {
+    0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 15px 6px;
+    }
+
+    .bingoBoard {
+        gap: 3px;
+    }
+
+    .bingoCell {
+        padding: 3px;
+        border-width: 1px;
+        font-size: clamp(7px, 1.8vw, 10px);
+        border-radius: 3px;
+    }
+
+    .bingoCell.marked::after {
+        font-size: 12px;
+        right: 2px;
+        top: 1px;
+    }
+
+    #rules {
+        margin: 25px 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bingoCell,
+    .bingoCell.winning,
+    .emoji {
+        animation: none;
+        transition: none;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <h1>🎉 AmishZed DayZ Bingo 🎉</h1>
+<h1>🎉 AmishZed DayZ Bingo 🎉</h1>
 
-    <div class="buttonContainer">
-        <button type="button" onclick="openModal()">
-            🎮 Generate DayZ Bingo Card
+<p class="subtitle">
+    Watch the stream. Mark the squares. Get BINGO!
+</p>
+
+<div id="startArea">
+    <button onclick="openModal()">
+        🎮 Generate My Bingo Card
+    </button>
+</div>
+
+<div id="gameArea">
+
+    <div class="playerInfo">
+        👤 Playing as:
+        <strong id="displayName"></strong>
+    </div>
+
+    <div id="bingoMessage" role="status">
+        <h2>🎉 BINGO! 🎉</h2>
+        <p>🏆 You did it! Tell Ish in chat! 🏆</p>
+        <button onclick="celebrate()">
+            🎊 Celebrate Again!
         </button>
     </div>
 
-    <div id="rules">
-        <h2>📝 How to Play ISH Bingo</h2>
+    <div class="bingoBoard" id="bingoBoard"></div>
 
-        <ol>
-            <li>🎯 Generate your DayZ Bingo card.</li>
-            <li>👤 Enter your username.</li>
-            <li>📄 Download your Bingo card PDF.</li>
-            <li>✔️ Mark squares while watching the stream.</li>
-            <li>🏆 When you get Bingo, share it in chat!</li>
-        </ol>
+    <p>Click a square to mark it. Click again to undo.</p>
+
+    <button onclick="openModal()">
+        🔄 New Bingo Card
+    </button>
+
+    <button class="secondary" onclick="resetMarks()">
+        ↩️ Clear Marks
+    </button>
+
+</div>
+
+<div id="rules">
+    <h2>📝 How to Play ISH Bingo</h2>
+    <ol>
+        <li>🎯 Generate a random DayZ Bingo card.</li>
+        <li>👤 Enter your username.</li>
+        <li>👀 Watch AmishZed's stream.</li>
+        <li>✔️ Click squares when Ish does something.</li>
+        <li>🏆 Get five in a row, column, or diagonal!</li>
+        <li>🎉 Celebrate and share your BINGO in chat!</li>
+    </ol>
+</div>
+
+<div id="nameModal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modalTitle">
+
+    <div class="modalContent">
+
+        <button class="closeBtn"
+                aria-label="Close"
+                onclick="closeModal()">
+            &times;
+        </button>
+
+        <h3 id="modalTitle">👤 Enter Your Username</h3>
+
+        <input
+            type="text"
+            id="playerName"
+            placeholder="Your username"
+            maxlength="40"
+            autocomplete="nickname"
+        >
+
+        <button onclick="startGame()">
+            🎮 Start Playing!
+        </button>
+
     </div>
+</div>
 
-    <div id="nameModal"
-         role="dialog"
-         aria-modal="true"
-         aria-labelledby="modalTitle">
+<footer>
+    💬 To AmishZed, thanks for the hours of entertainment and fun.
+    You are the light that shines during our mundane days in the
+    office or at home. We truly appreciate you and your less than
+    stellar gameplay. ❤️ - Chat
+</footer>
 
-        <div class="modal-content">
+<script>
 
-            <button type="button"
-                    class="close-btn"
-                    aria-label="Close"
-                    onclick="closeModal()">
-                &times;
-            </button>
+// ==========================================
+// DAYZ BINGO PHRASES
+// ==========================================
 
-            <h3 id="modalTitle">👤 Enter Your Name</h3>
+const dayzPhrases = [
+    'MORNING F',
+    'ISH TALKS ABOUT RUN CLUB',
+    'ISH STRIPS',
+    'ISH MISSES A SHOT AGAINST A PLAYER',
+    'ISH MISSES A SHOT AGAINST AN ANIMAL',
+    'BABYZED PHOTO',
+    'ISH PROMOTES NEW YT VIDEO',
+    'BURY',
+    'ISH GOES RED HUNGRY',
+    'ISH EATS A FOOD FROM COSTCO',
+    'ISH MENTIONS BOTTLE OPENING FEES',
+    'ISH TALKS ABOUT SKATEBOARDING',
+    'ISH DRINKS AT A WELL/WATERING HOLE',
+    'ISH TALKS ABOUT HIS NEW HOUSE',
+    'DAD JOKE IS TOLD',
+    'ISH GETS A KILL',
+    'HYPE TRAIN',
+    'ISH PUTS UP TIME OUT SYMBOL WHILE AFK',
+    'ISH PICKS UP AN SKS',
+    'ISH DOES A DESK POP',
+    'ISH TALKS ABOUT ZELDA',
+    'ISH FINDS THE NEW COOKING POT',
+    'ISH TALKS ABOUT BREAKING HIS WRIST',
+    'ISH MENTIONS MARVEL',
+    'ISH PUNCHES SOMEONE TO DEATH',
+    'ISH ACCIDENTALLY KILLS HIMSELF',
+    'ISH SAYS SOMETHING IN SPANISH',
+    'ISH THROWS A GRENADE',
+    'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
+    'ISH MENTIONS LETTERBOX',
+    'ISH MENTIONS ARM SHOTS',
+    'ISH MENTIONS HIS NARROW SHOULDERS',
+    'ISH MENTIONS HIS BROTHER',
+    'ISH FINDS A HELI CRASH',
+    'ISH BREAKS A LEG',
+    'ISH GETS SCARED FROM A SCARE DONO',
+    'ISH GETS DEEZ NUTS-ED'
+];
 
-            <input
-                type="text"
-                id="playerNameInput"
-                placeholder="Your username"
-                maxlength="40"
-                autocomplete="nickname"
-            >
+// ==========================================
+// GAME STATE
+// ==========================================
 
-            <div id="errorMessage" role="alert"></div>
+let currentCard = [];
+let markedSquares = [];
+let playerName = '';
+let hasCelebrated = false;
 
-            <button
-                type="button"
-                id="generateBtn"
-                onclick="startBingo()">
-                📄 Generate Card
-            </button>
+const STORAGE_KEY = 'amishzed_dayz_bingo_v1';
 
-        </div>
-    </div>
+// ==========================================
+// MODAL
+// ==========================================
 
-    <footer>
-        💬 To AmishZed, thanks for the hours of entertainment and fun.
-        You are the light that shines during our mundane days in the
-        office or at home. We truly appreciate you and your less than
-        stellar gameplay. ❤️ - Chat
-    </footer>
+function openModal() {
+    document.getElementById('nameModal').style.display = 'flex';
 
-    <script>
-        // ========================================
-        // DAYZ BINGO PHRASES
-        // Add or remove phrases here.
-        // Keep a comma between every phrase.
-        // ========================================
+    document.getElementById('playerName').value =
+        playerName || '';
 
-        const dayzPhrases = [
-            'MORNING F',
-            'ISH TALKS ABOUT RUN CLUB',
-            'ISH STRIPS',
-            'ISH MISSES A SHOT AGAINST A PLAYER',
-            'ISH MISSES A SHOT AGAINST AN ANIMAL',
-            'BABYZED PHOTO',
-            'ISH PROMOTES NEW YT VIDEO',
-            'BURY',
-            'ISH GOES RED HUNGRY',
-            'ISH EATS A FOOD FROM COSTCO',
-            'ISH MENTIONS BOTTLE OPENING FEES',
-            'ISH TALKS ABOUT SKATEBOARDING',
-            'ISH DRINKS AT A WELL/WATERING HOLE',
-            'ISH TALKS ABOUT HIS NEW HOUSE',
-            'DAD JOKE IS TOLD',
-            'ISH GETS A KILL',
-            'HYPE TRAIN',
-            'ISH PUTS UP TIME OUT SYMBOL WHILE AFK',
-            'ISH PICKS UP AN SKS',
-            'ISH DOES A DESK POP',
-            'ISH TALKS ABOUT ZELDA',
-            'ISH FINDS THE NEW COOKING POT',
-            'ISH TALKS ABOUT BREAKING HIS WRIST',
-            'ISH MENTIONS MARVEL',
-            'ISH PUNCHES SOMEONE TO DEATH',
-            'ISH ACCIDENTALLY KILLS HIMSELF',
-            'ISH SAYS SOMETHING IN SPANISH',
-            'ISH THROWS A GRENADE',
-            'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
-            'ISH MENTIONS LETTERBOX',
-            'ISH MENTIONS ARM SHOTS',
-            'ISH MENTIONS HIS NARROW SHOULDERS',
-            'ISH MENTIONS HIS BROTHER',
-            'ISH FINDS A HELI CRASH',
-            'ISH BREAKS A LEG',
-            'ISH GETS SCARED FROM A SCARE DONO',
-            'ISH GETS DEEZ NUTS-ED'
+    document.getElementById('playerName').focus();
+}
+
+function closeModal() {
+    document.getElementById('nameModal').style.display = 'none';
+}
+
+document.getElementById('nameModal').addEventListener(
+    'click',
+    function(event) {
+        if (event.target === this) {
+            closeModal();
+        }
+    }
+);
+
+document.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('nameModal');
+
+    if (modal.style.display !== 'flex') {
+        return;
+    }
+
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        startGame();
+    }
+});
+
+// ==========================================
+// SHUFFLE PHRASES
+// ==========================================
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+
+    return array;
+}
+
+// ==========================================
+// GENERATE CARD
+// ==========================================
+
+function generateRandomCard() {
+    const uniquePhrases = [...new Set(dayzPhrases)];
+
+    if (uniquePhrases.length < 24) {
+        throw new Error('At least 24 phrases are required.');
+    }
+
+    const shuffled = shuffle([...uniquePhrases]);
+
+    const selected = shuffled.slice(0, 24);
+
+    // Center square is always FREE SPACE.
+    selected.splice(12, 0, 'FREE SPACE');
+
+    return selected;
+}
+
+// ==========================================
+// START GAME
+// ==========================================
+
+function startGame() {
+    const input = document.getElementById('playerName');
+
+    playerName = input.value.trim() || 'Anonymous';
+
+    currentCard = generateRandomCard();
+
+    // Automatically mark FREE SPACE.
+    markedSquares = [12];
+
+    hasCelebrated = false;
+
+    closeModal();
+
+    saveGame();
+    renderBoard();
+}
+
+// ==========================================
+// RENDER BINGO BOARD
+// ==========================================
+
+function renderBoard() {
+    const gameArea = document.getElementById('gameArea');
+    const startArea = document.getElementById('startArea');
+    const board = document.getElementById('bingoBoard');
+
+    if (currentCard.length !== 25) {
+        return;
+    }
+
+    startArea.style.display = 'none';
+    gameArea.style.display = 'block';
+
+    document.getElementById('displayName').textContent =
+        playerName;
+
+    board.innerHTML = '';
+
+    // BINGO headings.
+    const headings = ['B', 'I', 'N', 'G', 'O'];
+
+    headings.forEach(function(letter) {
+        const heading = document.createElement('div');
+
+        heading.className = 'bingoLetter';
+        heading.textContent = letter;
+
+        board.appendChild(heading);
+    });
+
+    const winningSquares = getWinningSquares();
+
+    currentCard.forEach(function(phrase, index) {
+        const cell = document.createElement('button');
+
+        cell.type = 'button';
+        cell.className = 'bingoCell';
+        cell.textContent = phrase;
+
+        const isMarked = markedSquares.includes(index);
+
+        if (isMarked) {
+            cell.classList.add('marked');
+        }
+
+        if (index === 12) {
+            cell.classList.add('free');
+            cell.setAttribute('aria-label', 'FREE SPACE, marked');
+        } else {
+            cell.setAttribute(
+                'aria-label',
+                phrase + (isMarked ? ', marked' : ', unmarked')
+            );
+        }
+
+        cell.setAttribute('aria-pressed', String(isMarked));
+
+        if (winningSquares.includes(index)) {
+            cell.classList.add('winning');
+        }
+
+        cell.addEventListener('click', function() {
+            toggleSquare(index);
+        });
+
+        board.appendChild(cell);
+    });
+
+    document.getElementById('bingoMessage').style.display =
+        winningSquares.length > 0 ? 'block' : 'none';
+}
+
+// ==========================================
+// MARK OR UNMARK A SQUARE
+// ==========================================
+
+function toggleSquare(index) {
+    // FREE SPACE cannot be unmarked.
+    if (index === 12) {
+        return;
+    }
+
+    const hadBingo = getWinningSquares().length > 0;
+
+    if (markedSquares.includes(index)) {
+        markedSquares = markedSquares.filter(
+            function(value) {
+                return value !== index;
+            }
+        );
+    } else {
+        markedSquares.push(index);
+    }
+
+    const hasBingo = getWinningSquares().length > 0;
+
+    if (!hasBingo) {
+        hasCelebrated = false;
+    }
+
+    saveGame();
+    renderBoard();
+
+    // Celebrate only when a new Bingo is achieved.
+    if (hasBingo && !hadBingo && !hasCelebrated) {
+        hasCelebrated = true;
+        celebrate();
+    }
+}
+
+// ==========================================
+// CHECK FOR BINGO
+// ==========================================
+
+function getWinningSquares() {
+    const winningLines = [];
+
+    // Check all 5 rows.
+    for (let row = 0; row < 5; row++) {
+        const line = [];
+
+        for (let col = 0; col < 5; col++) {
+            line.push(row * 5 + col);
+        }
+
+        winningLines.push(line);
+    }
+
+    // Check all 5 columns.
+    for (let col = 0; col < 5; col++) {
+        const line = [];
+
+        for (let row = 0; row < 5; row++) {
+            line.push(row * 5 + col);
+        }
+
+        winningLines.push(line);
+    }
+
+    // Diagonal from top-left to bottom-right.
+    winningLines.push([0, 6, 12, 18, 24]);
+
+    // Diagonal from top-right to bottom-left.
+    winningLines.push([4, 8, 12, 16, 20]);
+
+    const winners = new Set();
+
+    winningLines.forEach(function(line) {
+        const complete = line.every(function(index) {
+            return markedSquares.includes(index);
+        });
+
+        if (complete) {
+            line.forEach(function(index) {
+                winners.add(index);
+            });
+        }
+    });
+
+    return [...winners];
+}
+
+// ==========================================
+// BINGO CELEBRATION
+// ==========================================
+
+function celebrate() {
+    const emojis = [
+        '🎉', '🎊', '🏆', '🔥',
+        '💚', '⭐', '🎮', '🥳',
+        '🍾', '💥', '🎯', '🦖'
+    ];
+
+    const reducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    if (reducedMotion) {
+        return;
+    }
+
+    for (let i = 0; i < 75; i++) {
+        const emoji = document.createElement('div');
+
+        emoji.className = 'emoji';
+
+        emoji.textContent =
+            emojis[Math.floor(Math.random() * emojis.length)];
+
+        emoji.style.left = Math.random() * 100 + 'vw';
+
+        emoji.style.fontSize =
+            (18 + Math.random() * 25) + 'px';
+
+        emoji.style.animationDuration =
+            (2.5 + Math.random() * 3) + 's';
+
+        emoji.style.animationDelay =
+            (Math.random() * 1.5) + 's';
+
+        document.body.appendChild(emoji);
+
+        emoji.addEventListener('animationend', function() {
+            emoji.remove();
+        });
+    }
+}
+
+// ==========================================
+// CLEAR MARKS
+// ==========================================
+
+function resetMarks() {
+    if (currentCard.length !== 25) {
+        return;
+    }
+
+    const confirmed = confirm(
+        'Clear all your marked squares? Your card will stay the same.'
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    markedSquares = [12];
+    hasCelebrated = false;
+
+    saveGame();
+    renderBoard();
+}
+
+// ==========================================
+// SAVE GAME TO BROWSER
+// ==========================================
+
+function saveGame() {
+    const gameData = {
+        playerName: playerName,
+        currentCard: currentCard,
+        markedSquares: markedSquares
+    };
+
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(gameData)
+        );
+    } catch (error) {
+        console.warn('Unable to save Bingo progress:', error);
+    }
+}
+
+// ==========================================
+// RESTORE SAVED GAME
+// ==========================================
+
+function loadGame() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if (!saved) {
+            return;
+        }
+
+        const gameData = JSON.parse(saved);
+
+        if (
+            !gameData ||
+            !Array.isArray(gameData.currentCard) ||
+            gameData.currentCard.length !== 25 ||
+            gameData.currentCard[12] !== 'FREE SPACE' ||
+            !Array.isArray(gameData.markedSquares)
+        ) {
+            return;
+        }
+
+        currentCard = gameData.currentCard;
+
+        playerName =
+            typeof gameData.playerName === 'string'
+                ? gameData.playerName
+                : 'Anonymous';
+
+        markedSquares = [
+            ...new Set(
+                gameData.markedSquares.filter(
+                    function(index) {
+                        return Number.isInteger(index) &&
+                               index >= 0 &&
+                               index < 25;
+                    }
+                )
+            )
         ];
 
-        // ========================================
-        // MODAL CONTROLS
-        // ========================================
-
-        const nameModal = document.getElementById('nameModal');
-        const playerNameInput =
-            document.getElementById('playerNameInput');
-        const errorMessage =
-            document.getElementById('errorMessage');
-
-        let previousFocus = null;
-
-        function openModal() {
-            previousFocus = document.activeElement;
-
-            errorMessage.textContent = '';
-            nameModal.style.display = 'flex';
-
-            playerNameInput.focus();
+        // Always include the FREE SPACE.
+        if (!markedSquares.includes(12)) {
+            markedSquares.push(12);
         }
 
-        function closeModal() {
-            nameModal.style.display = 'none';
-            errorMessage.textContent = '';
+        hasCelebrated = getWinningSquares().length > 0;
 
-            if (previousFocus) {
-                previousFocus.focus();
-            }
-        }
+        renderBoard();
 
-        nameModal.addEventListener('click', function(event) {
-            if (event.target === nameModal) {
-                closeModal();
-            }
-        });
+    } catch (error) {
+        console.warn('Unable to restore saved game:', error);
+    }
+}
 
-        document.addEventListener('keydown', function(event) {
-            if (nameModal.style.display !== 'flex') {
-                return;
-            }
+// Restore game when page loads.
+loadGame();
 
-            if (event.key === 'Escape') {
-                closeModal();
-            }
-
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                startBingo();
-            }
-
-            if (event.key === 'Tab') {
-                const controls = Array.from(
-                    nameModal.querySelectorAll(
-                        'button, input'
-                    )
-                );
-
-                const first = controls[0];
-                const last = controls[controls.length - 1];
-
-                if (event.shiftKey &&
-                    document.activeElement === first) {
-                    event.preventDefault();
-                    last.focus();
-                } else if (
-                    !event.shiftKey &&
-                    document.activeElement === last
-                ) {
-                    event.preventDefault();
-                    first.focus();
-                }
-            }
-        });
-
-        // ========================================
-        // RANDOM CARD GENERATOR
-        // ========================================
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(
-                    Math.random() * (i + 1)
-                );
-
-                [array[i], array[j]] =
-                    [array[j], array[i]];
-            }
-
-            return array;
-        }
-
-        function generateRandomCard() {
-            const uniquePhrases = [...new Set(dayzPhrases)];
-
-            if (uniquePhrases.length < 24) {
-                throw new Error(
-                    'At least 24 unique phrases are required.'
-                );
-            }
-
-            const shuffled = shuffle([...uniquePhrases]);
-
-            const selected = shuffled.slice(0, 24);
-
-            // Center square of a 5x5 grid.
-            selected.splice(12, 0, 'FREE SPACE');
-
-            return selected;
-        }
-
-        // ========================================
-        // START BINGO
-        // ========================================
-
-        function startBingo() {
-            const playerName =
-                playerNameInput.value.trim() || 'Anonymous';
-
-            if (!window.jspdf || !window.jspdf.jsPDF) {
-                errorMessage.textContent =
-                    'PDF generator could not load. ' +
-                    'Check your internet connection and try again.';
-                return;
-            }
-
-            try {
-                generateCard(playerName);
-                closeModal();
-            } catch (error) {
-                console.error('Bingo generation error:', error);
-
-                errorMessage.textContent =
-                    'Unable to generate your card. ' +
-                    'Please try again.';
-            }
-        }
-
-        // ========================================
-        // PDF TEXT FITTING
-        // ========================================
-
-        function fitTextToCell(doc, text, maxWidth, maxHeight) {
-            let fontSize = 9;
-            const minFontSize = 5;
-
-            let lines = [];
-
-            while (fontSize >= minFontSize) {
-                doc.setFontSize(fontSize);
-
-                lines = doc.splitTextToSize(
-                    text,
-                    maxWidth
-                );
-
-                const lineHeight = fontSize * 0.3528 * 1.25;
-                const textHeight = lines.length * lineHeight;
-
-                if (textHeight <= maxHeight) {
-                    break;
-                }
-
-                fontSize -= 0.5;
-            }
-
-            return {
-                lines: lines,
-                fontSize: fontSize
-            };
-        }
-
-        // ========================================
-        // GENERATE PDF BINGO CARD
-        // ========================================
-
-        function generateCard(playerName) {
-            const card = generateRandomCard();
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            const pageWidth =
-                doc.internal.pageSize.getWidth();
-
-            // Main title.
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(22);
-            doc.setTextColor(30, 30, 30);
-
-            doc.text(
-                'AmishZed DayZ Bingo',
-                pageWidth / 2,
-                20,
-                { align: 'center' }
-            );
-
-            // Player name.
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(13);
-
-            const safePlayerName = doc.splitTextToSize(
-                'Player: ' + playerName,
-                pageWidth - 36
-            );
-
-            doc.text(
-                safePlayerName,
-                pageWidth / 2,
-                30,
-                { align: 'center' }
-            );
-
-            // Grid measurements.
-            const cellSize = 34;
-            const gridSize = cellSize * 5;
-
-            const startX = (pageWidth - gridSize) / 2;
-            const startY = 55;
-
-            // BINGO column headings.
-            const headings = ['B', 'I', 'N', 'G', 'O'];
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(18);
-
-            headings.forEach(function(letter, col) {
-                const centerX =
-                    startX + col * cellSize + cellSize / 2;
-
-                doc.text(
-                    letter,
-                    centerX,
-                    startY - 7,
-                    { align: 'center' }
-                );
-            });
-
-            // Draw 5x5 bingo grid.
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const x = startX + col * cellSize;
-                    const y = startY + row * cellSize;
-
-                    const text = card[row * 5 + col];
-
-                    const isFreeSpace = text === 'FREE SPACE';
-
-                    // Highlight center free space.
-                    if (isFreeSpace) {
-                        doc.setFillColor(220, 245, 220);
-                        doc.rect(
-                            x, y,
-                            cellSize, cellSize,
-                            'F'
-                        );
-                    }
-
-                    // Draw square border.
-                    doc.setDrawColor(40, 40, 40);
-                    doc.setLineWidth(0.35);
-                    doc.rect(
-                        x, y,
-                        cellSize, cellSize
-                    );
-
-                    // Font settings.
-                    doc.setFont(
-                        'helvetica',
-                        isFreeSpace ? 'bold' : 'normal'
-                    );
-
-                    const fitted = fitTextToCell(
-                        doc,
-                        text,
-                        cellSize - 5,
-                        cellSize - 6
-                    );
-
-                    doc.setFontSize(fitted.fontSize);
-                    doc.setTextColor(20, 20, 20);
-
-                    // Center text vertically and horizontally.
-                    const lineHeight =
-                        fitted.fontSize * 0.3528 * 1.25;
-
-                    const textHeight =
-                        fitted.lines.length * lineHeight;
-
-                    const textStartY =
-                        y + (cellSize - textHeight) / 2
-                        + lineHeight * 0.75;
-
-                    fitted.lines.forEach(function(line, index) {
-                        doc.text(
-                            line,
-                            x + cellSize / 2,
-                            textStartY + index * lineHeight,
-                            { align: 'center' }
-                        );
-                    });
-                }
-            }
-
-            // Date below grid.
-            const today = new Date();
-
-            const formattedDate = today.toLocaleDateString(
-                'en-US',
-                {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: 'numeric'
-                }
-            );
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(12);
-
-            doc.text(
-                'Date: ' + formattedDate,
-                pageWidth / 2,
-                startY + gridSize + 15,
-                { align: 'center' }
-            );
-
-            // Instructions on PDF.
-            doc.setFontSize(10);
-            doc.setTextColor(90, 90, 90);
-
-            doc.text(
-                'Mark 5 squares in a row, column, or diagonal!',
-                pageWidth / 2,
-                startY + gridSize + 25,
-                { align: 'center' }
-            );
-
-            // Footer on PDF.
-            doc.setFontSize(9);
-
-            doc.text(
-                'Made for AmishZed and Chat',
-                pageWidth / 2,
-                280,
-                { align: 'center' }
-            );
-
-            // Save PDF with a safe filename.
-            const safeFileName = playerName
-                .replace(/[^a-zA-Z0-9_-]/g, '_')
-                .slice(0, 40);
-
-            doc.save(
-                'AmishZed_DayZ_Bingo_' +
-                safeFileName +
-                '.pdf'
-            );
-        }
-    </script>
+</script>
 
 </body>
 </html>
