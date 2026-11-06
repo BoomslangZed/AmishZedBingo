@@ -1,33 +1,35 @@
-# Fixed AmishZed Bingo Generator
 
-Copy and paste this entire file into your HTML file.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AmishZed Bingo Generator</title>
+    <title>AmishZed DayZ Bingo Generator</title>
 
     <link rel="icon" type="image/png" href="favicon.png">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
-            padding-top: 50px;
+            padding: 40px 15px 0;
             background: #f4f4f4;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            color: #222;
         }
 
         h1 {
             margin-bottom: 30px;
+            font-size: clamp(26px, 5vw, 38px);
         }
 
         .buttonContainer {
@@ -42,7 +44,7 @@ Copy and paste this entire file into your HTML file.
             color: white;
             border: none;
             border-radius: 6px;
-            transition: 0.3s;
+            transition: background-color 0.2s;
             margin: 5px;
         }
 
@@ -50,14 +52,30 @@ Copy and paste this entire file into your HTML file.
             background-color: #45a049;
         }
 
+        button:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 3px;
+        }
+
         #rules {
+            width: 100%;
             max-width: 450px;
             margin: 30px auto;
             text-align: left;
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        #rules h2 {
+            margin-top: 0;
+        }
+
+        #rules li {
+            margin-bottom: 12px;
+            line-height: 1.5;
         }
 
         footer {
@@ -79,107 +97,151 @@ Copy and paste this entire file into your HTML file.
             justify-content: center;
             align-items: center;
             z-index: 999;
+            padding: 20px;
         }
 
         .modal-content {
             background: white;
             padding: 30px;
             border-radius: 10px;
-            width: 300px;
+            width: 100%;
+            max-width: 350px;
             text-align: center;
             position: relative;
         }
 
         .modal-content input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 15px;
             font-size: 16px;
-            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         .close-btn {
             position: absolute;
-            right: 15px;
-            top: 10px;
+            right: 10px;
+            top: 5px;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 28px;
+            background: transparent;
+            color: #555;
+            border: none;
+            padding: 5px 10px;
+            margin: 0;
+        }
+
+        .close-btn:hover {
+            background: transparent;
+            color: #111;
+        }
+
+        #generateBtn {
+            width: 100%;
+            margin: 20px 0 0;
+        }
+
+        #errorMessage {
+            color: #b91c1c;
+            font-size: 14px;
+            margin-top: 12px;
+            min-height: 18px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 30px;
+            }
+
+            .buttonContainer button {
+                width: 100%;
+                max-width: 350px;
+                font-size: 16px;
+            }
+
+            #rules {
+                padding: 18px;
+            }
+
+            footer {
+                padding: 30px 10px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <h1>🎉 AmishZed Bingo Generator 🎉</h1>
+    <h1>🎉 AmishZed DayZ Bingo 🎉</h1>
 
     <div class="buttonContainer">
-
-        <button onclick="openModal('dayz')">
+        <button type="button" onclick="openModal()">
             🎮 Generate DayZ Bingo Card
         </button>
-
-        <button onclick="openModal('isle')">
-            🦖 Generate The Isle Bingo Card
-        </button>
-
     </div>
 
     <div id="rules">
-
         <h2>📝 How to Play ISH Bingo</h2>
 
         <ol>
-            <li>🎯 Choose a game bingo card.</li>
+            <li>🎯 Generate your DayZ Bingo card.</li>
             <li>👤 Enter your username.</li>
             <li>📄 Download your Bingo card PDF.</li>
             <li>✔️ Mark squares while watching the stream.</li>
-            <li>🏆 When you get Bingo share it in chat!</li>
+            <li>🏆 When you get Bingo, share it in chat!</li>
         </ol>
-
     </div>
 
-    <div id="nameModal">
+    <div id="nameModal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="modalTitle">
 
         <div class="modal-content">
 
-            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <button type="button"
+                    class="close-btn"
+                    aria-label="Close"
+                    onclick="closeModal()">
+                &times;
+            </button>
 
-            <h3>👤 Enter Your Name</h3>
+            <h3 id="modalTitle">👤 Enter Your Name</h3>
 
-            <input type="text" id="playerNameInput" placeholder="Your name">
+            <input
+                type="text"
+                id="playerNameInput"
+                placeholder="Your username"
+                maxlength="40"
+                autocomplete="nickname"
+            >
 
-            <br><br>
+            <div id="errorMessage" role="alert"></div>
 
-            <button onclick="startBingo()">📄 Generate Card</button>
+            <button
+                type="button"
+                id="generateBtn"
+                onclick="startBingo()">
+                📄 Generate Card
+            </button>
 
         </div>
-
     </div>
 
     <footer>
         💬 To AmishZed, thanks for the hours of entertainment and fun.
-        You are the light that shines during our mundane days in the office or at home.
-        We truly appreciate you and your less than stellar gameplay. ❤️ - Chat
+        You are the light that shines during our mundane days in the
+        office or at home. We truly appreciate you and your less than
+        stellar gameplay. ❤️ - Chat
     </footer>
 
     <script>
-
-        let selectedGame = 'dayz';
-
-        function openModal(game) {
-            selectedGame = game;
-            document.getElementById('nameModal').style.display = 'flex';
-            document.getElementById('playerNameInput').focus();
-        }
-
-        function closeModal() {
-            document.getElementById('nameModal').style.display = 'none';
-        }
-
-        window.onclick = function(e) {
-            if (e.target === document.getElementById('nameModal')) {
-                closeModal();
-            }
-        }
+        // ========================================
+        // DAYZ BINGO PHRASES
+        // Add or remove phrases here.
+        // Keep a comma between every phrase.
+        // ========================================
 
         const dayzPhrases = [
             'MORNING F',
@@ -213,157 +275,376 @@ Copy and paste this entire file into your HTML file.
             'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
             'ISH MENTIONS LETTERBOX',
             'ISH MENTIONS ARM SHOTS',
-            'ISH MENTIONS HIS NARROW SHOULDERS'
-            'ISH MENTIONS HIS BROTHER'
-            'ISH FINDS A HELI CRASH'
-            'ISH BREAKS A LEG'
-            'ISH GETS SCARED FROM A SCARE DONO'
+            'ISH MENTIONS HIS NARROW SHOULDERS',
+            'ISH MENTIONS HIS BROTHER',
+            'ISH FINDS A HELI CRASH',
+            'ISH BREAKS A LEG',
+            'ISH GETS SCARED FROM A SCARE DONO',
             'ISH GETS DEEZ NUTS-ED'
         ];
 
-        const islePhrases = [
-            'ISH ADOPTS A BABY',
-            'ISH KILLS A BOAR',
-            'ISH KILLS A DEER',
-            'ISH GETS KILLED BY AN AI ANIMAL',
-            'ISH JOINS A PACK',
-            'ISH DIES',
-            'ISH EATS ROTTEN FLESH',
-            'ISH GETS PERFECT DIET',
-            'ISH PROMOTES RUMSPRINGASAURUS',
-            'ISH TAKES FALL DAMAGE',
-            'ISH GETS LAID',
-            'ISH FIGHTS ANOTHER PLAYER',
-            'ISH SEES A TRICERATOPS',
-            'ISH RUNS AWAY FROM A FIGHT',
-            'ISH HITS PRIME',
-            'ISH SWIMS',
-            'ISH HIDES IN A BUSH',
-            'ISH KILLS A DINO OF THE SAME SPECIES AS HIM',
-            'ISH DRINKS SALT WATER',
-            'ISH GETS DENIED DINO SEX',
-            'ISH GETS AMBUSHED',
-            'ISH SAYS SOMETHING WEIRD WHILE RPing',
-            'ISH ACCIDENTALLY HITS A TEAMMATE',
-            'MORNING F',
-            'BURY',
-            'ISH GOES RED HUNGRY',
-            'ISH TALKS ABOUT RUN CLUB',
-            'DAD JOKE IS TOLD',
-            'ISH MENTIONS THAT HE LISTENED TO A PODCAST',
-            'ISH GOES TO SANCTUARY',
-            'REDLINE GETS MENTIONED',
-            'ISH TALKS ABOUT MARVEL'
-        ];
+        // ========================================
+        // MODAL CONTROLS
+        // ========================================
+
+        const nameModal = document.getElementById('nameModal');
+        const playerNameInput =
+            document.getElementById('playerNameInput');
+        const errorMessage =
+            document.getElementById('errorMessage');
+
+        let previousFocus = null;
+
+        function openModal() {
+            previousFocus = document.activeElement;
+
+            errorMessage.textContent = '';
+            nameModal.style.display = 'flex';
+
+            playerNameInput.focus();
+        }
+
+        function closeModal() {
+            nameModal.style.display = 'none';
+            errorMessage.textContent = '';
+
+            if (previousFocus) {
+                previousFocus.focus();
+            }
+        }
+
+        nameModal.addEventListener('click', function(event) {
+            if (event.target === nameModal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (nameModal.style.display !== 'flex') {
+                return;
+            }
+
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                startBingo();
+            }
+
+            if (event.key === 'Tab') {
+                const controls = Array.from(
+                    nameModal.querySelectorAll(
+                        'button, input'
+                    )
+                );
+
+                const first = controls[0];
+                const last = controls[controls.length - 1];
+
+                if (event.shiftKey &&
+                    document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (
+                    !event.shiftKey &&
+                    document.activeElement === last
+                ) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        });
+
+        // ========================================
+        // RANDOM CARD GENERATOR
+        // ========================================
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                const j = Math.floor(
+                    Math.random() * (i + 1)
+                );
+
+                [array[i], array[j]] =
+                    [array[j], array[i]];
             }
+
             return array;
         }
 
         function generateRandomCard() {
+            const uniquePhrases = [...new Set(dayzPhrases)];
 
-            let phrases = selectedGame === 'isle' ? islePhrases : dayzPhrases;
+            if (uniquePhrases.length < 24) {
+                throw new Error(
+                    'At least 24 unique phrases are required.'
+                );
+            }
 
-            const shuffled = shuffle([...phrases]);
+            const shuffled = shuffle([...uniquePhrases]);
 
             const selected = shuffled.slice(0, 24);
 
+            // Center square of a 5x5 grid.
             selected.splice(12, 0, 'FREE SPACE');
 
             return selected;
         }
 
+        // ========================================
+        // START BINGO
+        // ========================================
+
         function startBingo() {
+            const playerName =
+                playerNameInput.value.trim() || 'Anonymous';
 
-            let playerName = document.getElementById('playerNameInput').value.trim();
-
-            if (!playerName) {
-                playerName = 'Anonymous';
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                errorMessage.textContent =
+                    'PDF generator could not load. ' +
+                    'Check your internet connection and try again.';
+                return;
             }
 
-            closeModal();
+            try {
+                generateCard(playerName);
+                closeModal();
+            } catch (error) {
+                console.error('Bingo generation error:', error);
 
-            generateCard(playerName);
+                errorMessage.textContent =
+                    'Unable to generate your card. ' +
+                    'Please try again.';
+            }
         }
 
-        function generateCard(playerName) {
+        // ========================================
+        // PDF TEXT FITTING
+        // ========================================
 
+        function fitTextToCell(doc, text, maxWidth, maxHeight) {
+            let fontSize = 9;
+            const minFontSize = 5;
+
+            let lines = [];
+
+            while (fontSize >= minFontSize) {
+                doc.setFontSize(fontSize);
+
+                lines = doc.splitTextToSize(
+                    text,
+                    maxWidth
+                );
+
+                const lineHeight = fontSize * 0.3528 * 1.25;
+                const textHeight = lines.length * lineHeight;
+
+                if (textHeight <= maxHeight) {
+                    break;
+                }
+
+                fontSize -= 0.5;
+            }
+
+            return {
+                lines: lines,
+                fontSize: fontSize
+            };
+        }
+
+        // ========================================
+        // GENERATE PDF BINGO CARD
+        // ========================================
+
+        function generateCard(playerName) {
             const card = generateRandomCard();
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
 
-            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageWidth =
+                doc.internal.pageSize.getWidth();
 
+            // Main title.
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(22);
+            doc.setTextColor(30, 30, 30);
 
-            doc.text('AmishZed Bingo', pageWidth / 2, 20, {
-                align: 'center'
-            });
+            doc.text(
+                'AmishZed DayZ Bingo',
+                pageWidth / 2,
+                20,
+                { align: 'center' }
+            );
 
+            // Player name.
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(14);
+            doc.setFontSize(13);
 
-            doc.text(playerName, pageWidth / 2, 30, {
-                align: 'center'
+            const safePlayerName = doc.splitTextToSize(
+                'Player: ' + playerName,
+                pageWidth - 36
+            );
+
+            doc.text(
+                safePlayerName,
+                pageWidth / 2,
+                30,
+                { align: 'center' }
+            );
+
+            // Grid measurements.
+            const cellSize = 34;
+            const gridSize = cellSize * 5;
+
+            const startX = (pageWidth - gridSize) / 2;
+            const startY = 55;
+
+            // BINGO column headings.
+            const headings = ['B', 'I', 'N', 'G', 'O'];
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+
+            headings.forEach(function(letter, col) {
+                const centerX =
+                    startX + col * cellSize + cellSize / 2;
+
+                doc.text(
+                    letter,
+                    centerX,
+                    startY - 7,
+                    { align: 'center' }
+                );
             });
 
-            const startX = 18;
-            const startY = 45;
-            const cellSize = 34;
-
-            doc.setFontSize(8);
-
+            // Draw 5x5 bingo grid.
             for (let row = 0; row < 5; row++) {
-
                 for (let col = 0; col < 5; col++) {
-
                     const x = startX + col * cellSize;
                     const y = startY + row * cellSize;
 
                     const text = card[row * 5 + col];
 
-                    doc.rect(x, y, cellSize, cellSize);
+                    const isFreeSpace = text === 'FREE SPACE';
 
-                    const splitText = doc.splitTextToSize(text, cellSize - 4);
+                    // Highlight center free space.
+                    if (isFreeSpace) {
+                        doc.setFillColor(220, 245, 220);
+                        doc.rect(
+                            x, y,
+                            cellSize, cellSize,
+                            'F'
+                        );
+                    }
 
-                    doc.text(
-                        splitText,
-                        x + cellSize / 2,
-                        y + cellSize / 2,
-                        {
-                            align: 'center',
-                            baseline: 'middle'
-                        }
+                    // Draw square border.
+                    doc.setDrawColor(40, 40, 40);
+                    doc.setLineWidth(0.35);
+                    doc.rect(
+                        x, y,
+                        cellSize, cellSize
                     );
+
+                    // Font settings.
+                    doc.setFont(
+                        'helvetica',
+                        isFreeSpace ? 'bold' : 'normal'
+                    );
+
+                    const fitted = fitTextToCell(
+                        doc,
+                        text,
+                        cellSize - 5,
+                        cellSize - 6
+                    );
+
+                    doc.setFontSize(fitted.fontSize);
+                    doc.setTextColor(20, 20, 20);
+
+                    // Center text vertically and horizontally.
+                    const lineHeight =
+                        fitted.fontSize * 0.3528 * 1.25;
+
+                    const textHeight =
+                        fitted.lines.length * lineHeight;
+
+                    const textStartY =
+                        y + (cellSize - textHeight) / 2
+                        + lineHeight * 0.75;
+
+                    fitted.lines.forEach(function(line, index) {
+                        doc.text(
+                            line,
+                            x + cellSize / 2,
+                            textStartY + index * lineHeight,
+                            { align: 'center' }
+                        );
+                    });
                 }
             }
 
+            // Date below grid.
             const today = new Date();
 
-            doc.setFontSize(12);
-
-            doc.text(
-                'Date: ' + today.toLocaleDateString(),
-                pageWidth / 2,
-                startY + 5 * cellSize + 15,
+            const formattedDate = today.toLocaleDateString(
+                'en-US',
                 {
-                    align: 'center'
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric'
                 }
             );
 
-            doc.save('AmishZed_Bingo.pdf');
-        }
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
 
+            doc.text(
+                'Date: ' + formattedDate,
+                pageWidth / 2,
+                startY + gridSize + 15,
+                { align: 'center' }
+            );
+
+            // Instructions on PDF.
+            doc.setFontSize(10);
+            doc.setTextColor(90, 90, 90);
+
+            doc.text(
+                'Mark 5 squares in a row, column, or diagonal!',
+                pageWidth / 2,
+                startY + gridSize + 25,
+                { align: 'center' }
+            );
+
+            // Footer on PDF.
+            doc.setFontSize(9);
+
+            doc.text(
+                'Made for AmishZed and Chat',
+                pageWidth / 2,
+                280,
+                { align: 'center' }
+            );
+
+            // Save PDF with a safe filename.
+            const safeFileName = playerName
+                .replace(/[^a-zA-Z0-9_-]/g, '_')
+                .slice(0, 40);
+
+            doc.save(
+                'AmishZed_DayZ_Bingo_' +
+                safeFileName +
+                '.pdf'
+            );
+        }
     </script>
 
 </body>
 </html>
-```
-
-The issue was caused by a JavaScript parsing error in the phrases array. This version fixes the syntax issues and the buttons/modal should now work correctly.
